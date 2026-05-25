@@ -1,0 +1,58 @@
+{
+  "date": "2026-05-25",
+  "version": "MVP Local 0.1",
+  "title": "BMTS MVP - Primera version local",
+  "summary": "Se construyo la primera app web local para validar partida de nacimiento, foto obligatoria, QR/token, historial, ordenes, bloqueo SmogCheck e invoice basico.",
+  "audience": "BMTS owners and office team",
+  "screenshots": [
+    {
+      "label": "BMTS MVP dashboard",
+      "path": "C:/Users/no/Documents/BMTS planificacion y workflow/docs/remotion_captures/2026-05-25_mvp_local_loaded.png",
+      "description": "Vista principal cargada localmente con Community Tree, unidad demo, ficha de vehiculo, QR/token y formulario de partida."
+    }
+  ],
+  "data_highlights": [
+    "Cliente piloto: Community Tree Service",
+    "Base local JSON para validar el flujo",
+    "Foto obligatoria guardada localmente",
+    "QR token/ruta local por vehiculo",
+    "SmogCheck bloqueado antes de la fecha permitida",
+    "MVP validado en navegador local por Calvin",
+    "Consulta vPIC/NHTSA conectada para autollenar datos tecnicos",
+    "Pegado, validacion y foto local del VIN agregados al flujo",
+    "PaddleOCR aceptado como OCR provisional open source",
+    "PaddleOCR instalado localmente y endpoint probado con VIN sintetico correcto"
+  ],
+  "decisions": [
+    "MVP web-first",
+    "Fotos locales durante MVP",
+    "QR unico vinculado a base local",
+    "vPIC/NHTSA como fuente tecnica por VIN",
+    "PaddleOCR provisional para lectura de VIN por imagen con confirmacion humana",
+    "QuickBooks queda para fase posterior"
+  ],
+  "demo_flow": [
+    "Crear partida de nacimiento con VIN, foto y datos tecnicos",
+    "Consultar vPIC/NHTSA para autollenar informacion del vehiculo",
+    "Pegar VIN o registrar foto del VIN como respaldo",
+    "Leer VIN desde foto con PaddleOCR y confirmar el resultado",
+    "Asignar QR unico al vehiculo",
+    "Simular escaneo del QR para abrir ficha",
+    "Intentar SmogCheck antes de tiempo",
+    "Mostrar bloqueo y autorizacion admin",
+    "Crear orden valida y generar invoice basico"
+  ],
+  "limitations": [
+    "Imagen QR aun pendiente de conectar al generador propio",
+    "Login y roles reales pendientes",
+    "Base JSON local antes de PostgreSQL/Prisma",
+    "La foto demo actual es un placeholder pequeño; reemplazar por foto real en pruebas BMTS"
+  ],
+  "next_steps": [
+    "Conectar generador propio de QR",
+    "Capturar pantallas adicionales del flujo Historial, Servicio e Invoice",
+    "Probar PaddleOCR con fotos reales del VIN",
+    "Definir flujo real desde recepcion hasta cobro",
+    "Preparar primer video Remotion de avance"
+  ]
+}

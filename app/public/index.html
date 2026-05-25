@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BMTS MVP</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">BMTS MVP local</p>
+      <h1>Control de flota y partida de nacimiento</h1>
+    </div>
+    <div class="top-actions">
+      <button id="refreshBtn" class="icon-button" title="Actualizar">↻</button>
+      <button id="printBtn" class="icon-button" title="Imprimir QR">⎙</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="panel">
+        <div class="panel-title">
+          <h2>Community Tree</h2>
+          <span id="vehicleCount" class="badge">0 unidades</span>
+        </div>
+        <input id="searchInput" class="input" type="search" placeholder="Buscar placa, VIN, unidad o QR">
+        <div id="vehicleList" class="vehicle-list"></div>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <nav class="tabs" aria-label="Vistas">
+        <button class="tab active" data-view="birth">Partida</button>
+        <button class="tab" data-view="history">Historial</button>
+        <button class="tab" data-view="order">Servicio</button>
+        <button class="tab" data-view="invoice">Invoice</button>
+      </nav>
+
+      <section id="birthView" class="view active">
+        <div class="split">
+          <form id="vehicleForm" class="panel form-panel">
+            <div class="panel-title">
+              <h2>Nueva partida de nacimiento</h2>
+              <span class="badge required">foto obligatoria</span>
+            </div>
+
+            <div class="grid two">
+              <label>Numero de unidad
+                <input name="unitNumber" class="input" required placeholder="CT-001">
+              </label>
+              <label>Placa
+                <input name="plate" class="input" required placeholder="8ABC123">
+              </label>
+            </div>
+
+            <label>VIN
+              <div class="inline">
+                <input name="vin" class="input" required placeholder="17 caracteres">
+                <button type="button" id="decodeVinBtn" class="secondary">vPIC</button>
+              </div>
+            </label>
+
+            <div class="vin-tools">
+              <button type="button" id="pasteVinBtn" class="tool-button">Pegar VIN</button>
+              <span id="vinValidation" class="vin-validation">VIN pendiente</span>
+            </div>
+
+            <div class="grid two">
+              <label>Foto del VIN
+                <input name="vinPhoto" class="input" type="file" accept="image/*">
+              </label>
+              <div>
+                <div class="vin-photo-preview" id="vinPhotoPreview">Sin foto VIN</div>
+                <button type="button" id="readVinPhotoBtn" class="tool-button vin-read-btn">Leer VIN con PaddleOCR</button>
+              </div>
+            </div>
+
+            <div class="grid three">
+              <label>Año
+                <input name="year" class="input" placeholder="2021">
+              </label>
+              <label>Marca
+                <input name="make" class="input" placeholder="Ford">
+              </label>
+              <label>Modelo
+                <input name="model" class="input" placeholder="F-550">
+              </label>
+            </div>
+
+            <div class="grid two">
+              <label>Carroceria
+                <input name="bodyClass" class="input">
+              </label>
+              <label>Motor
+                <input name="engine" class="input">
+              </label>
+            </div>
+
+            <div class="grid three">
+              <label>Combustible
+                <input name="fuelType" class="input">
+              </label>
+              <label>GVWR
+                <input name="gvwr" class="input">
+              </label>
+              <label>Traccion
+                <input name="driveType" class="input">
+              </label>
+            </div>
+
+            <div class="grid two">
+              <label>Fabricante
+                <input name="manufacturer" class="input">
+              </label>
+              <label>Planta
+                <input name="plant" class="input">
+              </label>
+            </div>
+
+            <input name="vehicleType" type="hidden">
+            <input name="nhtsaErrorText" type="hidden">
+            <div id="nhtsaSummary" class="nhtsa-summary">vPIC/NHTSA pendiente</div>
+
+            <div class="grid two">
+              <label>Proximo SmogCheck permitido
+                <input name="nextSmogCheckDue" class="input" type="date">
+              </label>
+              <label>Foto principal
+                <input name="photo" class="input" type="file" accept="image/*" required>
+              </label>
+            </div>
+
+            <label>Notas iniciales
+              <textarea name="notes" class="input textarea" placeholder="Condicion inicial, observaciones, equipo especial..."></textarea>
+            </label>
+
+            <button class="primary" type="submit">Crear partida + QR</button>
+            <p id="vehicleFormMsg" class="message"></p>
+          </form>
+
+          <article id="vehicleCard" class="panel vehicle-card empty">
+            <h2>Selecciona o crea una unidad</h2>
+            <p>La ficha mostrara foto, datos tecnicos, QR asignado y estado de SmogCheck.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="historyView" class="view">
+        <div class="panel">
+          <div class="panel-title">
+            <h2>Historial vivo</h2>
+            <span id="historyCount" class="badge">0 eventos</span>
+          </div>
+          <div id="historyList" class="timeline"></div>
+        </div>
+      </section>
+
+      <section id="orderView" class="view">
+        <div class="split">
+          <form id="orderForm" class="panel form-panel">
+            <div class="panel-title">
+              <h2>Nueva orden</h2>
+              <span class="badge">QR → servicio</span>
+            </div>
+            <label>Servicio
+              <select name="serviceType" class="input" required>
+                <option>SmogCheck</option>
+                <option>Cambio de aceite</option>
+                <option>Mantenimiento menor</option>
+                <option>Cambio de partes</option>
+                <option>Servicio de grua</option>
+                <option>Asistencia en carretera</option>
+              </select>
+            </label>
+            <label>Fecha solicitada
+              <input name="requestedDate" class="input" type="date" required>
+            </label>
+            <label>Notas
+              <textarea name="notes" class="input textarea"></textarea>
+            </label>
+            <label>Labor
+              <textarea name="labor" class="input textarea"></textarea>
+            </label>
+            <label>Partes
+              <textarea name="parts" class="input textarea"></textarea>
+            </label>
+            <div class="override-box">
+              <label class="check">
+                <input name="adminOverride" type="checkbox">
+                Autorizacion admin
+              </label>
+              <input name="overrideReason" class="input" placeholder="Razon si se autoriza excepcion">
+            </div>
+            <button class="primary" type="submit">Crear orden</button>
+            <p id="orderFormMsg" class="message"></p>
+          </form>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h2>Ordenes</h2>
+              <span id="orderCount" class="badge">0</span>
+            </div>
+            <div id="orderList" class="order-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="invoiceView" class="view">
+        <div class="split">
+          <form id="invoiceForm" class="panel form-panel">
+            <div class="panel-title">
+              <h2>Invoice basico</h2>
+              <span class="badge">por orden</span>
+            </div>
+            <label>Orden terminada
+              <select name="workOrderId" class="input" required></select>
+            </label>
+            <div class="grid three">
+              <label>Subtotal
+                <input name="subtotal" class="input" type="number" min="0" step="0.01" value="0">
+              </label>
+              <label>Tax
+                <input name="tax" class="input" type="number" min="0" step="0.01" value="0">
+              </label>
+              <label>Total
+                <input name="total" class="input" type="number" min="0" step="0.01" value="0">
+              </label>
+            </div>
+            <label>Notas internas
+              <textarea name="internalNotes" class="input textarea"></textarea>
+            </label>
+            <label>Notas para cliente
+              <textarea name="clientNotes" class="input textarea"></textarea>
+            </label>
+            <button class="primary" type="submit">Crear invoice</button>
+            <p id="invoiceFormMsg" class="message"></p>
+          </form>
+          <div class="panel">
+            <div class="panel-title">
+              <h2>Invoices</h2>
+              <span id="invoiceCount" class="badge">0</span>
+            </div>
+            <div id="invoiceList" class="order-list"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <template id="vehicleCardTemplate">
+    <img class="vehicle-photo" alt="Foto del vehiculo">
+    <div class="vehicle-info">
+      <p class="eyebrow">Partida de nacimiento</p>
+      <h2></h2>
+      <dl></dl>
+      <div class="qr-card">
+        <div class="qr-mark">QR</div>
+        <div>
+          <strong>Codigo asignado</strong>
+          <code></code>
+          <a target="_blank" rel="noreferrer">Abrir enlace de escaneo</a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script src="/app.js"></script>
+</body>
+</html>

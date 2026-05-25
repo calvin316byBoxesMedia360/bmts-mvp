@@ -1,0 +1,60 @@
+{
+  "clients": [
+    {
+      "id": "client-community-tree",
+      "name": "Community Tree Service",
+      "type": "fleet",
+      "contactName": "",
+      "phone": "",
+      "email": ""
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "vehicle_fc5fcf88-f4d2-493c-9f3c-53301aba1785",
+      "clientId": "client-community-tree",
+      "unitNumber": "CT-DEMO-001",
+      "plate": "DEMO123",
+      "vin": "1FT8W3DT0NEE00000",
+      "make": "Ford",
+      "model": "F-350",
+      "year": "2022",
+      "bodyClass": "Truck",
+      "engine": "Diesel",
+      "notes": "Unidad de prueba MVP",
+      "photoUrl": "/uploads/vehicle_fc5fcf88-f4d2-493c-9f3c-53301aba1785.png",
+      "qrToken": "bmts_8ec4e06af012cc6a6f130013",
+      "qrValue": "/v/bmts_8ec4e06af012cc6a6f130013",
+      "nextSmogCheckDue": "2026-08-25",
+      "createdAt": "2026-05-25T19:02:53.465Z",
+      "updatedAt": "2026-05-25T19:02:53.465Z"
+    }
+  ],
+  "workOrders": [],
+  "invoices": [],
+  "historyEvents": [
+    {
+      "id": "event_dec06303-370e-465e-9283-275c3713d160",
+      "vehicleId": "vehicle_fc5fcf88-f4d2-493c-9f3c-53301aba1785",
+      "type": "qr_assigned",
+      "title": "QR asignado al vehiculo",
+      "detail": {
+        "qrValue": "/v/bmts_8ec4e06af012cc6a6f130013"
+      },
+      "createdAt": "2026-05-25T19:02:53.465Z"
+    },
+    {
+      "id": "event_a53c78c1-9b53-47a6-a9c7-aee91fcadc9f",
+      "vehicleId": "vehicle_fc5fcf88-f4d2-493c-9f3c-53301aba1785",
+      "type": "birth_record",
+      "title": "Partida de nacimiento creada",
+      "detail": {
+        "unitNumber": "CT-DEMO-001",
+        "plate": "DEMO123",
+        "vin": "1FT8W3DT0NEE00000",
+        "qrToken": "bmts_8ec4e06af012cc6a6f130013"
+      },
+      "createdAt": "2026-05-25T19:02:53.465Z"
+    }
+  ]
+}

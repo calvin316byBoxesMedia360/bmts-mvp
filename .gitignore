@@ -1,0 +1,11 @@
+app/.venv/
+app/.paddlex/
+app/.cache/
+app/.home/
+app/.paddlex_runtime/
+app/.cache_runtime/
+app/.home_runtime/
+app/*_old/
+app/data/uploads/
+__pycache__/
+*.pyc

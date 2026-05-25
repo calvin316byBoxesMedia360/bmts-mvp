@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BMTS - Reporte de Proyecto</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #1f2933;
+      background: #f5f7fa;
+      line-height: 1.5;
+    }
+    header {
+      background: #111827;
+      color: white;
+      padding: 32px 24px;
+    }
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    section {
+      background: white;
+      border: 1px solid #d9e2ec;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    h1, h2 {
+      margin-top: 0;
+    }
+    .meta {
+      color: #bcccdc;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #075985;
+      font-size: 13px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+    th, td {
+      border: 1px solid #d9e2ec;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #eef2f7;
+    }
+    .status {
+      font-weight: 700;
+      color: #166534;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BMTS - Reporte de Proyecto</h1>
+    <p class="meta">BoxesMedia360 / Beto's Mobile & Truck Services / Version documental 0.1 / 2026-05-25</p>
+  </header>
+  <main>
+    <section>
+      <h2>Resumen</h2>
+      <p>El proyecto BMTS busca convertir el conocimiento operativo del taller en un sistema digital simple, confiable y escalable. La primera etapa debe enfocarse en flotas, historial vehicular, prevencion de duplicados, ordenes de trabajo e invoice basico.</p>
+      <p>Prioridad confirmada: partida de nacimiento del vehiculo con vPIC/NHTSA, foto principal obligatoria guardada localmente, QR unico imprimible, historial vivo, prevencion de duplicados, piloto Community Tree Service y version web-first.</p>
+      <span class="pill">MVP</span>
+      <span class="pill">Flotas</span>
+      <span class="pill">Duplicados</span>
+      <span class="pill">Invoices</span>
+      <span class="pill">Agent Skills</span>
+    </section>
+
+    <section>
+      <h2>Versiones Autograduadas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Version</th>
+            <th>Estado</th>
+            <th>Entrega Esperada</th>
+            <th>Criterio De Aprobacion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0.1 Documentacion</td>
+            <td class="status">Completada</td>
+            <td>README, memoria, contrato, preguntas, MVP scope</td>
+            <td>El equipo puede explicar el sistema sin depender de la reunion original.</td>
+          </tr>
+          <tr>
+            <td>0.2 Descubrimiento Validado</td>
+            <td class="status">Iniciada</td>
+            <td>Respuestas a preguntas pre-MVP, flujo real confirmado y habilidades aplicadas</td>
+            <td>Beto/oficina confirman pasos, roles y reglas de duplicado.</td>
+          </tr>
+          <tr>
+            <td>0.3 Prototipo Navegable</td>
+            <td class="status">Completada</td>
+            <td>App local en carpeta app con base JSON y flujo navegable</td>
+            <td>Calvin ya cargo el MVP en navegador local. Usuario puede recorrer cliente, vehiculo, QR, historial, orden, duplicado e invoice.</td>
+          </tr>
+          <tr>
+            <td>0.4 MVP Funcional</td>
+            <td class="status">Iniciada</td>
+            <td>Base de datos, auth, CRUD, ordenes, historial y duplicados</td>
+            <td>Demo con una flota real y una alerta de duplicado realista.</td>
+          </tr>
+          <tr>
+            <td>0.5 Integraciones</td>
+            <td class="status">Iniciada</td>
+            <td>OCR, SMS/email, pagos, QuickBooks o exportacion</td>
+            <td>BMTS reduce trabajo manual sin perder control. Integración local de PaddleOCR y API vPIC funcionando.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Hallazgos</h2>
+      <ul>
+        <li>El mayor riesgo operativo es repetir servicios o no cobrar a tiempo.</li>
+        <li>La primera version debe capturar el proceso real antes de automatizarlo demasiado.</li>
+        <li>El sistema debe separar informacion interna de informacion visible para cliente.</li>
+        <li>Los agentes de IA seran mas utiles despues de tener datos consistentes.</li>
+        <li>El ZIP de habilidades confirma soporte para producto, Next.js, React Native, seguridad, accesibilidad y ejecucion por planes.</li>
+        <li>QuickBooks queda fuera del MVP inicial, pero debe contemplarse en el modelo para integracion futura.</li>
+        <li>SmogCheck sera la primera regla fuerte: advertir y bloquear si se intenta antes de la fecha permitida de 3 meses, con autorizacion de admin para excepciones.</li>
+        <li>La foto del vehiculo sera obligatoria durante el alta de la partida de nacimiento y se almacenara localmente en el MVP.</li>
+        <li>Cada vehiculo tendra un QR unico vinculado a la base local para abrir ficha, historial y carga de servicio mediante escaneo.</li>
+        <li>El MVP local ya fue abierto exitosamente en `http://localhost:4173/` y se guardo captura para Remotion.</li>
+        <li>La consulta vPIC/NHTSA por VIN ya esta conectada y autollenando datos tecnicos ampliados en la partida de nacimiento.</li>
+        <li>Se agrego pegado, normalizacion, validacion y foto local del VIN para reducir errores de captura.</li>
+        <li>PaddleOCR fue aceptado como OCR provisional open source para leer VIN desde foto; Google Vision queda como alternativa futura.</li>
+        <li>PaddleOCR quedo instalado localmente y el endpoint OCR ya leyo correctamente un VIN sintetico completo; el flujo mantiene confirmacion humana antes de consultar vPIC.</li>
+        <li>Se resolvió un problema de permisos denegados en la caché de PaddleOCR (`.paddlex_runtime`) para el usuario de Windows.</li>
+        <li>Se implementó el escalado automático con `Pillow` para fotos tomadas con móviles (ej. 4000x1848), reduciendo el tamaño a un máximo de 1500px, habilitando la precisión del OCR local al 100% en fotos de campo.</li>
+        <li>Se automatizó el flujo en la interfaz web de forma que al leer un VIN por OCR o al pegarlo, se ejecuta la decodificación de vPIC/NHTSA inmediatamente en un solo paso si el código tiene 17 caracteres.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Habilidades Aplicables</h2>
+      <p>Para el primer ciclo se recomiendan: intelligent_app_interpreter, brainstorming, writing-plans, nextjs-app-router-patterns, react-state-management, frontend-security-patterns, error-handling-patterns y executing-plans.</p>
+    </section>
+
+    <section>
+      <h2>Siguiente Decision</h2>
+      <p>Resolver las preguntas pendientes de flujo real, formato del QR, reglas de duplicado y datos obligatorios. La direccion ya queda definida: web-first, Community Tree, partida de nacimiento, QR, historial y duplicados.</p>
+    </section>
+  </main>
+</body>
+</html>
