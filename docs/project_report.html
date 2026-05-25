@@ -3,163 +3,767 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BMTS - Reporte de Proyecto</title>
+  <title>BMTS - Reporte y Dashboard del Proyecto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --accent: #f43f5e;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #1f2933;
-      background: #f5f7fa;
-      line-height: 1.5;
+      padding: 0;
     }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text-main);
+      background-color: var(--bg-main);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
     header {
-      background: #111827;
-      color: white;
-      padding: 32px 24px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+      padding: 40px 24px;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      overflow: hidden;
     }
-    main {
-      max-width: 1040px;
+
+    header::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .header-container {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
-    section {
-      background: white;
-      border: 1px solid #d9e2ec;
+
+    h1 {
+      font-family: var(--font-title);
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, #f8fafc, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .meta {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta span::after {
+      content: '•';
+      margin-left: 16px;
+      color: #475569;
+    }
+
+    .meta span:last-child::after {
+      content: '';
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+    }
+
+    /* Tabs de Versión del Reporte (V0.1 vs V0.2) */
+    .version-selector {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      background-color: #1e293b;
+      padding: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      width: fit-content;
+    }
+
+    .version-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 8px 18px;
       border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 18px;
+      cursor: pointer;
+      transition: all 0.25s ease;
     }
-    h1, h2 {
+
+    .version-tab:hover {
+      color: var(--text-main);
+    }
+
+    .version-tab.active {
+      background-color: var(--primary);
+      color: #0f172a;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Panel de Versión */
+    .version-panel {
+      display: none;
+    }
+
+    .version-panel.active {
+      display: block;
+    }
+
+    /* Tabs Internas para V0.2 (Admin vs Técnico vs Logs) */
+    .inner-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      gap: 24px;
+    }
+
+    .inner-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 12px 4px;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .inner-tab:hover {
+      color: var(--text-main);
+    }
+
+    .inner-tab.active {
+      color: var(--primary);
+    }
+
+    .inner-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--primary);
+    }
+
+    /* Contenedores de Vista */
+    .view-content {
+      display: none;
+    }
+
+    .view-content.active {
+      display: block;
+    }
+
+    /* Tarjetas y Diseño de Dashboard */
+    .grid {
+      display: grid;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: #475569;
+    }
+
+    .card-title {
+      font-family: var(--font-title);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card h3 {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      margin: 18px 0 8px 0;
+      color: var(--text-main);
+      border-bottom: 1px solid #334155;
+      padding-bottom: 4px;
+    }
+
+    .card h3:first-of-type {
       margin-top: 0;
     }
-    .meta {
-      color: #bcccdc;
+
+    p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
     }
+
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 16px;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    li strong {
+      color: var(--text-main);
+    }
+
+    /* Píldoras y Estados */
     .pill {
       display: inline-block;
       padding: 4px 10px;
       border-radius: 999px;
-      background: #e0f2fe;
-      color: #075985;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       margin-right: 6px;
+      margin-bottom: 6px;
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
     }
+
+    .pill.active {
+      background-color: rgba(56, 189, 248, 0.1);
+      color: var(--primary);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .pill.success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    /* Tablas de Reporte */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 12px;
+      margin: 16px 0;
+      font-size: 0.9rem;
     }
+
     th, td {
-      border: 1px solid #d9e2ec;
-      padding: 10px;
+      border: 1px solid var(--border-color);
+      padding: 12px;
       text-align: left;
-      vertical-align: top;
+      vertical-align: middle;
     }
+
     th {
-      background: #eef2f7;
-    }
-    .status {
+      background-color: #0f172a;
+      color: var(--primary);
+      font-family: var(--font-title);
       font-weight: 700;
-      color: #166534;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-badge.completada {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+
+    .status-badge.iniciada {
+      background-color: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+
+    .status-badge.pendiente {
+      background-color: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+    }
+
+    /* Historial y Línea de tiempo */
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      border-left: 2px solid var(--border-color);
+      margin-top: 10px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: -27px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      border: 2px solid var(--bg-card);
+    }
+
+    .timeline-item.success::after {
+      background-color: var(--success);
+    }
+
+    .timeline-date {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .timeline-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Widgets Estadísticos */
+    .stat-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      font-family: var(--font-title);
+      margin-bottom: 4px;
+    }
+
+    .stat-lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>BMTS - Reporte de Proyecto</h1>
-    <p class="meta">BoxesMedia360 / Beto's Mobile & Truck Services / Version documental 0.1 / 2026-05-25</p>
+    <div class="header-container">
+      <h1>BMTS — Planificación & Reporte del Proyecto</h1>
+      <div class="meta">
+        <span><strong>Cliente:</strong> Beto's Mobile & Truck Services</span>
+        <span><strong>Flota Piloto:</strong> Community Tree Service</span>
+        <span><strong>Última Sincronización:</strong> 2026-05-25</span>
+        <span><strong>Repo:</strong> GitHub bmts-mvp</span>
+      </div>
+    </div>
   </header>
+
   <main>
-    <section>
-      <h2>Resumen</h2>
-      <p>El proyecto BMTS busca convertir el conocimiento operativo del taller en un sistema digital simple, confiable y escalable. La primera etapa debe enfocarse en flotas, historial vehicular, prevencion de duplicados, ordenes de trabajo e invoice basico.</p>
-      <p>Prioridad confirmada: partida de nacimiento del vehiculo con vPIC/NHTSA, foto principal obligatoria guardada localmente, QR unico imprimible, historial vivo, prevencion de duplicados, piloto Community Tree Service y version web-first.</p>
-      <span class="pill">MVP</span>
-      <span class="pill">Flotas</span>
-      <span class="pill">Duplicados</span>
-      <span class="pill">Invoices</span>
-      <span class="pill">Agent Skills</span>
-    </section>
+    <!-- Selector de Versión Principal (V0.2 vs V0.1) -->
+    <div class="version-selector" aria-label="Versión del Reporte">
+      <button class="version-tab active" data-version="v2">Reporte V0.2 (Actual - Estabilización de OCR & UX)</button>
+      <button class="version-tab" data-version="v1">Reporte V0.1 (Inicial - Planificación de MVP)</button>
+    </div>
 
-    <section>
-      <h2>Versiones Autograduadas</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Version</th>
-            <th>Estado</th>
-            <th>Entrega Esperada</th>
-            <th>Criterio De Aprobacion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>0.1 Documentacion</td>
-            <td class="status">Completada</td>
-            <td>README, memoria, contrato, preguntas, MVP scope</td>
-            <td>El equipo puede explicar el sistema sin depender de la reunion original.</td>
-          </tr>
-          <tr>
-            <td>0.2 Descubrimiento Validado</td>
-            <td class="status">Iniciada</td>
-            <td>Respuestas a preguntas pre-MVP, flujo real confirmado y habilidades aplicadas</td>
-            <td>Beto/oficina confirman pasos, roles y reglas de duplicado.</td>
-          </tr>
-          <tr>
-            <td>0.3 Prototipo Navegable</td>
-            <td class="status">Completada</td>
-            <td>App local en carpeta app con base JSON y flujo navegable</td>
-            <td>Calvin ya cargo el MVP en navegador local. Usuario puede recorrer cliente, vehiculo, QR, historial, orden, duplicado e invoice.</td>
-          </tr>
-          <tr>
-            <td>0.4 MVP Funcional</td>
-            <td class="status">Iniciada</td>
-            <td>Base de datos, auth, CRUD, ordenes, historial y duplicados</td>
-            <td>Demo con una flota real y una alerta de duplicado realista.</td>
-          </tr>
-          <tr>
-            <td>0.5 Integraciones</td>
-            <td class="status">Iniciada</td>
-            <td>OCR, SMS/email, pagos, QuickBooks o exportacion</td>
-            <td>BMTS reduce trabajo manual sin perder control. Integración local de PaddleOCR y API vPIC funcionando.</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <!-- ============================================== -->
+    <!-- PANEL REPORTE V0.2 (ACTUAL)                     -->
+    <!-- ============================================== -->
+    <div id="panel-v2" class="version-panel active">
+      
+      <!-- Pestañas internas para la versión 0.2 -->
+      <nav class="inner-tabs" aria-label="Secciones de la versión 0.2">
+        <button class="inner-tab active" data-view="v2-admin">Vista Administrativa (Negocio)</button>
+        <button class="inner-tab" data-view="v2-tech">Vista Técnica (Stack & Workflow)</button>
+        <button class="inner-tab" data-view="v2-logs">Estado & Logs de Cambio</button>
+      </nav>
 
-    <section>
-      <h2>Hallazgos</h2>
-      <ul>
-        <li>El mayor riesgo operativo es repetir servicios o no cobrar a tiempo.</li>
-        <li>La primera version debe capturar el proceso real antes de automatizarlo demasiado.</li>
-        <li>El sistema debe separar informacion interna de informacion visible para cliente.</li>
-        <li>Los agentes de IA seran mas utiles despues de tener datos consistentes.</li>
-        <li>El ZIP de habilidades confirma soporte para producto, Next.js, React Native, seguridad, accesibilidad y ejecucion por planes.</li>
-        <li>QuickBooks queda fuera del MVP inicial, pero debe contemplarse en el modelo para integracion futura.</li>
-        <li>SmogCheck sera la primera regla fuerte: advertir y bloquear si se intenta antes de la fecha permitida de 3 meses, con autorizacion de admin para excepciones.</li>
-        <li>La foto del vehiculo sera obligatoria durante el alta de la partida de nacimiento y se almacenara localmente en el MVP.</li>
-        <li>Cada vehiculo tendra un QR unico vinculado a la base local para abrir ficha, historial y carga de servicio mediante escaneo.</li>
-        <li>El MVP local ya fue abierto exitosamente en `http://localhost:4173/` y se guardo captura para Remotion.</li>
-        <li>La consulta vPIC/NHTSA por VIN ya esta conectada y autollenando datos tecnicos ampliados en la partida de nacimiento.</li>
-        <li>Se agrego pegado, normalizacion, validacion y foto local del VIN para reducir errores de captura.</li>
-        <li>PaddleOCR fue aceptado como OCR provisional open source para leer VIN desde foto; Google Vision queda como alternativa futura.</li>
-        <li>PaddleOCR quedo instalado localmente y el endpoint OCR ya leyo correctamente un VIN sintetico completo; el flujo mantiene confirmacion humana antes de consultar vPIC.</li>
-        <li>Se resolvió un problema de permisos denegados en la caché de PaddleOCR (`.paddlex_runtime`) para el usuario de Windows.</li>
-        <li>Se implementó el escalado automático con `Pillow` para fotos tomadas con móviles (ej. 4000x1848), reduciendo el tamaño a un máximo de 1500px, habilitando la precisión del OCR local al 100% en fotos de campo.</li>
-        <li>Se automatizó el flujo en la interfaz web de forma que al leer un VIN por OCR o al pegarlo, se ejecuta la decodificación de vPIC/NHTSA inmediatamente en un solo paso si el código tiene 17 caracteres.</li>
-      </ul>
-    </section>
+      <!-- V0.2 - VISTA ADMINISTRATIVA -->
+      <section id="view-v2-admin" class="view-content active">
+        <div class="grid two">
+          <div class="card">
+            <h2 class="card-title">🎯 Objetivos y Caso de Negocio</h2>
+            <p><strong>Beto's Mobile & Truck Services (BMTS)</strong> acumula 30 años de experiencia técnica en Hollister, CA. Con el crecimiento hacia cuentas comerciales, el control manual en papel ha empezado a generar pérdidas financieras.</p>
+            <p><strong>Dolor Operativo Principal:</strong></p>
+            <ul>
+              <li><strong>Servicios Duplicados:</strong> Pérdida de dinero y tiempo por realizar mantenimientos repetidos (especialmente inspecciones obligatorias de emisiones <em>SmogCheck</em>) antes del plazo normativo.</li>
+              <li><strong>Retraso en Reportes:</strong> La oficina se entera tarde de los trabajos realizados por los mecánicos en campo, retrasando la emisión de facturas.</li>
+              <li><strong>Cobros Olvidados:</strong> Labores o partes instaladas en carretera que no quedan registradas y terminan perdiéndose.</li>
+            </ul>
+            <p>El MVP resuelve esto unificando la "Partida de Nacimiento" del vehículo con un QR de acceso inmediato y un validador estricto de duplicados en tiempo real.</p>
+          </div>
 
-    <section>
-      <h2>Habilidades Aplicables</h2>
-      <p>Para el primer ciclo se recomiendan: intelligent_app_interpreter, brainstorming, writing-plans, nextjs-app-router-patterns, react-state-management, frontend-security-patterns, error-handling-patterns y executing-plans.</p>
-    </section>
+          <div class="card">
+            <h2 class="card-title">👥 Roles y Responsabilidades</h2>
+            <p>El MVP mapea los flujos reales de la operación familiar de BMTS:</p>
+            <ul>
+              <li><strong>Administrador (Beto):</strong> Tiene visibilidad total del negocio. Es el único perfil con privilegios para aprobar una excepción de bloqueo ante una alerta de servicio duplicado.</li>
+              <li><strong>Personal de Oficina:</strong> Crea y gestiona la ficha maestra ("partida de nacimiento") de los vehículos, registra clientes, administra las órdenes de trabajo y genera las facturas base para contabilidad.</li>
+              <li><strong>Mecánico (Campo/Taller):</strong> Escanea el código QR adherido a la unidad con su smartphone para abrir de inmediato la ficha del vehículo, consultar su historial y registrar notas de partes o labor sin necesidad de papel.</li>
+              <li><strong>Contabilidad:</strong> Revisa invoices listos para su posterior cobro o futura exportación/sincronización con QuickBooks.</li>
+              <li><strong>Cliente de Flota:</strong> Cuenta con acceso simple para verificar el estado de sus unidades e historial de cumplimiento de inspecciones.</li>
+            </ul>
+          </div>
+        </div>
 
-    <section>
-      <h2>Siguiente Decision</h2>
-      <p>Resolver las preguntas pendientes de flujo real, formato del QR, reglas de duplicado y datos obligatorios. La direccion ya queda definida: web-first, Community Tree, partida de nacimiento, QR, historial y duplicados.</p>
-    </section>
+        <div class="card">
+          <h2 class="card-title">🛡️ Reglas Críticas de Negocio</h2>
+          <p>Para la validación del piloto con el primer gran cliente comercial (<strong>Community Tree Service</strong>, ~200 camiones), se definieron las siguientes reglas operativas:</p>
+          <div class="grid two" style="margin-top: 16px; margin-bottom: 0;">
+            <div>
+              <h3>🚫 Bloqueo Estricto de SmogCheck</h3>
+              <p>Las inspecciones de emisiones no pueden realizarse antes de los **3 meses** del servicio previo en California. El MVP bloquea la creación de una orden si detecta una coincidencia temporal. La única forma de evadir el bloqueo es con una contraseña/autorización de administrador y la captura obligatoria de la justificación técnica de la excepción.</p>
+            </div>
+            <div>
+              <h3>📋 Alertas de Mantenimiento Menor</h3>
+              <p>Servicios como cambio de aceite, reemplazo de frenos, servicio de grúa o asistencia en carretera arrojan avisos configurables basados en el historial del vehículo para que la oficina aconseje al cliente si un servicio no es realmente necesario todavía.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- V0.2 - VISTA TÉCNICA -->
+      <section id="view-v2-tech" class="view-content">
+        <div class="grid two">
+          <div class="card">
+            <h2 class="card-title">🛠️ Arquitectura y Stack Tecnológico</h2>
+            <p>Se implementó un stack ligero pero sumamente robusto para cumplir con la premisa de <strong>operación local-first</strong> (independencia de la nube) y velocidad de respuesta:</p>
+            
+            <h3>💻 Backend Servidor</h3>
+            <ul>
+              <li><strong>Node.js Nativo:</strong> API HTTP construida sin dependencias pesadas en `server.js`. Rápida, limpia y fácil de desplegar.</li>
+              <li><strong>Base de Datos Local JSON:</strong> Persistencia de datos estructurados en `app/data/db.json` para facilitar la portabilidad en dispositivos locales de la oficina.</li>
+              <li><strong>Almacenamiento de Archivos:</strong> Las imágenes del VIN y las fotos del vehículo se almacenan localmente en la ruta `app/data/uploads`.</li>
+            </ul>
+
+            <h3>🤖 Módulo de Inteligencia Artificial (OCR)</h3>
+            <ul>
+              <li><strong>Python & PaddleOCR:</strong> Entorno virtual local `app/.venv` con `paddleocr` (v3.5) y `paddlepaddle` (v3.2) ejecutándose en CPU local.</li>
+              <li><strong>Pillow (PIL):</strong> Módulo integrado en Python encargado del procesamiento y compresión dinámica de imágenes.</li>
+            </ul>
+
+            <h3>🔌 Integraciones de Datos</h3>
+            <ul>
+              <li><strong>NHTSA vPIC API:</strong> Integración con la API oficial del gobierno de EE.UU. para decodificar números VIN de 17 caracteres y autollenar marca, modelo, motor, GVWR y detalles del chasis.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">🔄 Workflow Técnico del MVP</h2>
+            <ol>
+              <li>
+                <strong>Carga de Foto y Compresión PIL:</strong> 
+                El usuario sube una foto del VIN desde su móvil o PC. Si la imagen es una foto nativa de smartphone (ej. 4000x1848 px), el sistema la intercepta en `ocr_vin_paddle.py` y la redimensiona a un máximo de **1500px**, convirtiéndola a un JPEG de baja huella (~150KB en lugar de 4MB).
+              </li>
+              <li>
+                <strong>Inferencia PaddleOCR Local:</strong>
+                Se ejecuta el motor OCR localmente sobre la imagen reducida. Extrae el texto, filtra etiquetas redundantes (como "VIN" o "ID") y busca el patrón regex de 17 caracteres hexadecimales (removiendo letras no válidas `I`, `O`, `Q`).
+              </li>
+              <li>
+                <strong>Precarga y Autocompletado vPIC:</strong>
+                Si el OCR detecta un VIN válido, el frontend escribe el valor e inmediatamente dispara una consulta a la API de la NHTSA. Todos los detalles técnicos del camión se autocompletan en el formulario en un solo paso (Workflow de 4 segundos).
+              </li>
+              <li>
+                <strong>Ficha Maestra ("Acta de Nacimiento") & QR:</strong>
+                Al guardar, se asocia una foto del vehículo obligatoria y se genera un token QR único. Este QR mapea a la ruta de simulación `/v/{qrToken}` en el backend para que el mecánico escanee el camión físico y vea el historial vivo.
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- V0.2 - ESTADO Y LOGS DE CAMBIO -->
+      <section id="view-v2-logs" class="view-content">
+        <div class="stat-container">
+          <div class="stat-box">
+            <div class="stat-val">V0.2</div>
+            <div class="stat-lbl">Versión Actual</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">2026-05-25</div>
+            <div class="stat-lbl">Fecha de Corte</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" style="color: var(--success);">ESTABLE</div>
+            <div class="stat-lbl">Estado local</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">4.2s</div>
+            <div class="stat-lbl">Tiempo Medio OCR</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">📈 Hitos de Desarrollo del Proyecto</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Código Hito</th>
+                <th>Descripción del Entregable</th>
+                <th>Estado Actual</th>
+                <th>Criterio de Validación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>H-0.1</strong></td>
+                <td>Documentación básica del MVP (Contrato, Alcance, Memoria)</td>
+                <td><span class="status-badge completada">Completada</span></td>
+                <td>Contrato firmado en borrador y memoria actualizada.</td>
+              </tr>
+              <tr>
+                <td><strong>H-0.2</strong></td>
+                <td>Descubrimiento Técnico & Validación del Piloto</td>
+                <td><span class="status-badge iniciada">Iniciada</span></td>
+                <td>Beto y la oficina definen los campos exactos del taller.</td>
+              </tr>
+              <tr>
+                <td><strong>H-0.3</strong></td>
+                <td>Prototipo Navegable Local (Node Server, Local JSON DB)</td>
+                <td><span class="status-badge completada">Completada</span></td>
+                <td>El MVP carga en local (`http://localhost:4173`), permite crear unidades, QR, SmogCheck y facturas base.</td>
+              </tr>
+              <tr>
+                <td><strong>H-0.4</strong></td>
+                <td>Base de Datos y Autenticación Multi-Rol</td>
+                <td><span class="status-badge iniciada">Iniciada</span></td>
+                <td>Migración a PostgreSQL/Prisma y creación de logins reales.</td>
+              </tr>
+              <tr>
+                <td><strong>H-0.5</strong></td>
+                <td>Módulos de Integración (OCR, vPIC, PDF)</td>
+                <td><span class="status-badge iniciada">Iniciada</span></td>
+                <td>PaddleOCR funcionando local-first en fotos reales de smartphone. NHTSA cargando de forma asíncrona.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top: 24px;">
+          <h2 class="card-title">🕒 Bitácora de Estabilización (2026-05-25)</h2>
+          <div class="timeline">
+            
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-25 15:15 PM</div>
+              <div class="timeline-title">Conexión de Repositorio GitHub y Push Formal</div>
+              <div class="timeline-desc">Se vinculó el proyecto local al nuevo repositorio remoto `calvin316byBoxesMedia360/bmts-mvp` en GitHub. Se configuró un archivo `.gitignore` estricto para ignorar binarios de dependencias y fotos temporales, realizándose la primera subida limpia.</div>
+            </div>
+
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-25 14:35 PM</div>
+              <div class="timeline-title">Redimensionamiento PIL y Auto-Trigger de vPIC</div>
+              <div class="timeline-desc">Se implementó redimensionamiento de imágenes con `PIL` en `ocr_vin_paddle.py` para fotos que excedan los 1500px, reduciendo el peso de la imagen original a ~150KB. Esto habilitó la detección de texto al 100% en fotos de smartphones. Asimismo, se automatizó el frontend para invocar a la API de vPIC tras una lectura exitosa de OCR de 17 caracteres.</div>
+            </div>
+
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-25 13:50 PM</div>
+              <div class="timeline-title">Resolución de Permisos de Caché y Error 501</div>
+              <div class="timeline-desc">Se corrigió el error `PermissionError: [Errno 13] Access denied` renombrando la caché antigua `.paddlex_runtime` a `.paddlex_runtime_old`. El motor regeneró los modelos con permisos del usuario activo. Se actualizó `server.js` para retornar `200 OK` (en lugar de `501`) ante lecturas vacías.</div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PANEL REPORTE V0.1 (HISTÓRICO)                  -->
+    <!-- ============================================== -->
+    <div id="panel-v1" class="version-panel">
+      
+      <section class="card">
+        <h2 class="card-title">📖 Resumen Histórico V0.1</h2>
+        <p>Este es el borrador inicial y ejecutivo del reporte del proyecto al inicio de la jornada de planificación del 2026-05-25.</p>
+        <p>El proyecto BMTS busca convertir el conocimiento operativo del taller en un sistema digital simple, confiable y escalable. La primera etapa debe enfocarse en flotas, historial vehicular, prevención de duplicados, órdenes de trabajo e invoice básico.</p>
+      </section>
+
+      <section class="card" style="margin-top: 24px;">
+        <h2 class="card-title">📋 Versiones Autograduadas Iniciales</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Versión</th>
+              <th>Estado Inicial</th>
+              <th>Entrega Esperada</th>
+              <th>Criterio De Aprobación Original</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0.1 Documentación</td>
+              <td>Iniciada</td>
+              <td>README, memoria, contrato, preguntas, MVP scope</td>
+              <td>El equipo puede explicar el sistema sin depender de la reunión original.</td>
+            </tr>
+            <tr>
+              <td>0.2 Descubrimiento Validado</td>
+              <td>Pendiente</td>
+              <td>Respuestas a preguntas pre-MVP, flujo real confirmado y habilidades aplicadas</td>
+              <td>Beto/oficina confirman pasos, roles y reglas de duplicado.</td>
+            </tr>
+            <tr>
+              <td>0.3 Prototipo Navegable</td>
+              <td>Iniciada</td>
+              <td>App local en carpeta app con base JSON y flujo navegable</td>
+              <td>Calvin ya cargó el MVP en navegador local. Usuario puede recorrer cliente, vehículo, QR, historial, orden, duplicado e invoice.</td>
+            </tr>
+            <tr>
+              <td>0.4 MVP Funcional</td>
+              <td>Pendiente</td>
+              <td>Base de datos, auth, CRUD, órdenes, historial y duplicados</td>
+              <td>Demo con una flota real y una alerta de duplicado realista.</td>
+            </tr>
+            <tr>
+              <td>0.5 Integraciones</td>
+              <td>Pendiente</td>
+              <td>OCR, SMS/email, pagos, QuickBooks o exportación</td>
+              <td>BMTS reduce trabajo manual sin perder control.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card" style="margin-top: 24px;">
+        <h2 class="card-title">🔍 Hallazgos Iniciales</h2>
+        <ul>
+          <li>El mayor riesgo operativo es repetir servicios o no cobrar a tiempo.</li>
+          <li>La primera versión debe capturar el proceso real antes de automatizarlo demasiado.</li>
+          <li>El sistema debe separar información interna de información visible para cliente.</li>
+          <li>Los agentes de IA serán más útiles después de tener datos consistentes.</li>
+          <li>El ZIP de habilidades confirma soporte para producto, Next.js, React Native, seguridad, accesibilidad y ejecución por planes.</li>
+          <li>QuickBooks queda fuera del MVP inicial, pero debe contemplarse en el modelo para integración futura.</li>
+          <li>SmogCheck será la primera regla fuerte: advertir y bloquear si se intenta antes de la fecha permitida de 3 meses, con autorización de admin para excepciones.</li>
+          <li>La foto del vehículo será obligatoria durante el alta de la partida de nacimiento y se almacenará localmente en el MVP.</li>
+          <li>Cada vehículo tendrá un QR único vinculado a la base local para abrir ficha, historial y carga de servicio mediante escaneo.</li>
+          <li>El MVP local ya fue abierto exitosamente en `http://localhost:4173/` y se guardo captura para Remotion.</li>
+          <li>La consulta vPIC/NHTSA por VIN ya está conectada y autollenando datos técnicos ampliados en la partida de nacimiento.</li>
+          <li>Se agregó pegado, normalización, validación y foto local del VIN para reducir errores de captura.</li>
+          <li>PaddleOCR fue aceptado como OCR provisional open source para leer VIN desde foto; Google Vision queda como alternativa futura.</li>
+          <li>PaddleOCR quedó instalado localmente y el endpoint OCR ya leyó correctamente un VIN sintético completo; el flujo mantiene confirmación humana antes de consultar vPIC.</li>
+        </ul>
+      </section>
+    </div>
+
   </main>
+
+  <!-- LÓGICA DE INTERACCIÓN DE PESTAÑAS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Selector de Versión Principal (V0.2 vs V0.1)
+      const versionTabs = document.querySelectorAll(".version-tab");
+      const versionPanels = document.querySelectorAll(".version-panel");
+
+      versionTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          versionTabs.forEach(t => t.classList.remove("active"));
+          versionPanels.forEach(p => p.classList.remove("active"));
+
+          tab.classList.add("active");
+          const targetId = `panel-${tab.dataset.version}`;
+          document.getElementById(targetId).classList.add("active");
+        });
+      });
+
+      // 2. Selector de Pestañas Internas (V0.2 Admin vs Técnico vs Logs)
+      const innerTabs = document.querySelectorAll(".inner-tab");
+      const viewContents = document.querySelectorAll(".view-content");
+
+      innerTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          innerTabs.forEach(t => t.classList.remove("active"));
+          viewContents.forEach(c => c.classList.remove("active"));
+
+          tab.classList.add("active");
+          const targetId = `view-${tab.dataset.view}`;
+          document.getElementById(targetId).classList.add("active");
+        });
+      });
+    });
+  </script>
 </body>
 </html>
