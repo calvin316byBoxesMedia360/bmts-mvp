@@ -509,50 +509,100 @@
       <!-- V0.2 - VISTA TÉCNICA -->
       <section id="view-v2-tech" class="view-content">
         <div class="grid two">
+          <!-- Card 1: Stack Tecnológico y Librerías -->
           <div class="card">
-            <h2 class="card-title">🛠️ Arquitectura y Stack Tecnológico</h2>
-            <p>Se implementó un stack ligero pero sumamente robusto para cumplir con la premisa de <strong>operación local-first</strong> (independencia de la nube) y velocidad de respuesta:</p>
+            <h2 class="card-title">🛠️ Stack Tecnológico Detallado & Librerías</h2>
+            <p>Se utiliza una arquitectura híbrida local-first que combina un servidor Node.js y un motor de inferencia de IA en Python.</p>
             
-            <h3>💻 Backend Servidor</h3>
+            <h3>💻 Entorno de Servidor (Node.js)</h3>
             <ul>
-              <li><strong>Node.js Nativo:</strong> API HTTP construida sin dependencias pesadas en `server.js`. Rápida, limpia y fácil de desplegar.</li>
-              <li><strong>Base de Datos Local JSON:</strong> Persistencia de datos estructurados en `app/data/db.json` para facilitar la portabilidad en dispositivos locales de la oficina.</li>
-              <li><strong>Almacenamiento de Archivos:</strong> Las imágenes del VIN y las fotos del vehículo se almacenan localmente en la ruta `app/data/uploads`.</li>
+              <li><strong>Node.js (v22.22.3):</strong> Servidor nativo (`app/server.js`) utilizando módulos del núcleo de Node (`node:http`, `node:fs/promises`, `node:child_process`, `node:path`, `node:crypto`).</li>
+              <li><strong>MIME Types locales:</strong> Servidor estático integrado para servir `.html`, `.css`, `.js`, y archivos binarios (`.jpg`, `.png`, `.webp`, `.svg`).</li>
+              <li><strong>Base de Datos JSON (`app/data/db.json`):</strong> Base de datos local transaccional ligera con operaciones asíncronas de lectura/escritura (`fs.readFile`/`fs.writeFile`).</li>
             </ul>
 
-            <h3>🤖 Módulo de Inteligencia Artificial (OCR)</h3>
+            <h3>🤖 Entorno de Inferencia de IA (Python .venv)</h3>
             <ul>
-              <li><strong>Python & PaddleOCR:</strong> Entorno virtual local `app/.venv` con `paddleocr` (v3.5) y `paddlepaddle` (v3.2) ejecutándose en CPU local.</li>
-              <li><strong>Pillow (PIL):</strong> Módulo integrado en Python encargado del procesamiento y compresión dinámica de imágenes.</li>
+              <li><strong>Python 3.12 (Virtual Environment local en `app/.venv`):</strong> Ejecución asíncrona de scripts de inferencia.</li>
+              <li><strong>`paddleocr==3.5.0` & `paddlepaddle==3.2.2` (CPU Version):</strong> Librerías de Deep Learning encargadas del reconocimiento de caracteres y detección de cajas de texto (PP-OCRv5).</li>
+              <li><strong>`numpy==2.3.5`:</strong> Manipulación matemática y procesamiento de tensores de imagen para Paddle.</li>
+              <li><strong>`Pillow`:</strong> Librería para manipulación de imagen, utilizada en la optimización de tamaño, formato y compresión de archivos subidos.</li>
             </ul>
 
-            <h3>🔌 Integraciones de Datos</h3>
+            <h3>🔌 Integración de APIs Externas</h3>
             <ul>
-              <li><strong>NHTSA vPIC API:</strong> Integración con la API oficial del gobierno de EE.UU. para decodificar números VIN de 17 caracteres y autollenar marca, modelo, motor, GVWR y detalles del chasis.</li>
+              <li><strong>NHTSA vPIC API (DecodeVinValuesExtended):</strong> Consulta asíncrona mediante HTTPS (`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/{vin}?format=json`) para la extracción y decodificación de datos de homologación de vehículos en EE.UU.</li>
             </ul>
           </div>
 
+          <!-- Card 2: Inventario de Archivos del Proyecto -->
           <div class="card">
-            <h2 class="card-title">🔄 Workflow Técnico del MVP</h2>
-            <ol>
+            <h2 class="card-title">📁 Inventario de Archivos del Proyecto</h2>
+            <p>Estructura de archivos y funciones críticas implementadas:</p>
+            <ul>
               <li>
-                <strong>Carga de Foto y Compresión PIL:</strong> 
-                El usuario sube una foto del VIN desde su móvil o PC. Si la imagen es una foto nativa de smartphone (ej. 4000x1848 px), el sistema la intercepta en `ocr_vin_paddle.py` y la redimensiona a un máximo de **1500px**, convirtiéndola a un JPEG de baja huella (~150KB en lugar de 4MB).
+                <strong>[app/server.js](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/app/server.js):</strong> 
+                Orquestador del backend. Expone endpoints REST (`/api/state`, `/api/vehicles`, `/api/work-orders`, `/api/invoices`, `/api/vin-photo/recognize`). Maneja la persistencia y la llamada al script de OCR por subprocess (`spawn`).
               </li>
               <li>
-                <strong>Inferencia PaddleOCR Local:</strong>
-                Se ejecuta el motor OCR localmente sobre la imagen reducida. Extrae el texto, filtra etiquetas redundantes (como "VIN" o "ID") y busca el patrón regex de 17 caracteres hexadecimales (removiendo letras no válidas `I`, `O`, `Q`).
+                <strong>[app/scripts/ocr_vin_paddle.py](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/app/scripts/ocr_vin_paddle.py):</strong> 
+                Script en Python. Escala la imagen mediante Pillow si supera los 1500px, ejecuta `PaddleOCR` (con `use_textline_orientation=True` y `lang="en"`), aplica lógica regex `[A-HJ-NPR-Z0-9]{17}` y limpia prefijos como "VIN" o "ID" para evitar falsos positivos.
               </li>
               <li>
-                <strong>Precarga y Autocompletado vPIC:</strong>
-                Si el OCR detecta un VIN válido, el frontend escribe el valor e inmediatamente dispara una consulta a la API de la NHTSA. Todos los detalles técnicos del camión se autocompletan en el formulario en un solo paso (Workflow de 4 segundos).
+                <strong>[app/public/app.js](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/app/public/app.js):</strong> 
+                Lógica del lado del cliente. Maneja el renderizado de la UI, el pegado de VIN, la subida de archivos Base64, y la automatización que encadena el éxito del OCR directamente con la consulta vPIC/NHTSA.
               </li>
               <li>
-                <strong>Ficha Maestra ("Acta de Nacimiento") & QR:</strong>
-                Al guardar, se asocia una foto del vehículo obligatoria y se genera un token QR único. Este QR mapea a la ruta de simulación `/v/{qrToken}` en el backend para que el mecánico escanee el camión físico y vea el historial vivo.
+                <strong>[app/public/index.html](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/app/public/index.html) & [styles.css](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/app/public/styles.css):</strong> 
+                Interfaz de usuario del MVP diseñada con variables CSS estructuradas, layouts adaptables y controles de estado visuales.
               </li>
-            </ol>
+              <li>
+                <strong>[docs/system_contract.md](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/docs/system_contract.md):</strong> 
+                Contrato de software y reglas de negocio obligatorias del proyecto.
+              </li>
+              <li>
+                <strong>[docs/memoria.md](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/docs/memoria.md) & [implementation_log.md](file:///C:/Users/no/Documents/BMTS%20planificacion%20y%20workflow/docs/implementation_log.md):</strong> 
+                Bitácoras e historial de decisiones arquitectónicas y técnicas.
+              </li>
+            </ul>
           </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px;">
+          <h2 class="card-title">🔄 Diagramas de Flujo y Pasos de Ejecución</h2>
+          <div class="grid two" style="margin-top: 16px; margin-bottom: 0;">
+            <div>
+              <h3>🔄 Flujo 1: Registro con OCR y vPIC</h3>
+              <p>El flujo encadenado para crear la Partida de Nacimiento funciona así:</p>
+              <ol>
+                <li><strong>Carga en UI:</strong> El usuario sube foto del VIN a `#vehicleForm` (`file input`).</li>
+                <li><strong>Compresión Pillow:</strong> El servidor Node recibe la imagen Base64, la guarda en `uploads/` y ejecuta el script Python. Si la imagen mide más de 1500px en el lado largo (ej. fotos de celular de 4MB), `Pillow` la escala a un máximo de 1500px de forma proporcional y la guarda como JPEG con calidad 85% (~150KB).</li>
+                <li><strong>Lectura OCR:</strong> `PaddleOCR` (con `use_textline_orientation=True` para soportar fotos rotadas o de lado) detecta el texto, remueve palabras redundantes (como "VIN" o "ID") y busca el patrón del VIN de 17 caracteres. Retorna JSON en stdout.</li>
+                <li><strong>Auto-Trigger:</strong> El backend retorna `200 OK` con el VIN. La app web escribe el VIN en el campo correspondiente e invoca inmediatamente un click programático en `#decodeVinBtn`.</li>
+                <li><strong>Decodificación NHTSA:</strong> El servidor consulta el VIN en vPIC y completa automáticamente Año, Marca, Modelo, Carrocería, Tipo de combustible, GVWR y Planta en el formulario.</li>
+              </ol>
+            </div>
+            <div>
+              <h3>🛡️ Flujo 2: Prevención de Duplicados (SmogCheck)</h3>
+              <p>Mapeo de la lógica de negocio para bloquear o alertar servicios duplicados:</p>
+              <ol>
+                <li><strong>Validación Temporal:</strong> Al intentar crear una orden de trabajo, el backend examina el historial de la unidad.</li>
+                <li><strong>Filtro SmogCheck:</strong> Si el tipo de servicio es `SmogCheck`, compara la fecha solicitada con la fecha de la propiedad `nextSmogCheckDue` del vehículo. Si es anterior al plazo de 3 meses, se deniega la petición.</li>
+                <li><strong>Alerta o Bloqueo:</strong> Retorna un error `409 Conflict` bloqueante a la interfaz.</li>
+                <li><strong>Autorización de Administrador:</strong> Si el formulario incluye el check de `adminOverride` activo y se escribe una justificación obligatoria en `overrideReason`, el backend permite registrar la orden de trabajo, guardando la razón del bypass en el historial de eventos del vehículo para auditorías.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">📜 Historial de Acciones y Cambios Técnicos Clave</h2>
+          <p>Para lograr la estabilidad actual del prototipo, se realizaron las siguientes intervenciones clave sobre el código base original:</p>
+          <ul>
+            <li><strong>Estabilización de Permisos de Caché de IA:</strong> Se detectó que el módulo `paddlex` de Python intentaba leer archivos del modelo OCR (`inference.yml`) con permisos denegados. Esto se solucionó renombrando la carpeta `.paddlex_runtime` a `.paddlex_runtime_old` y permitiendo al motor regenerarla de forma limpia con los permisos del usuario de Windows activo.</li>
+            <li><strong>Manejo de Errores Robustos en API:</strong> Anteriormente, si PaddleOCR se ejecutaba con éxito pero no encontraba ningún patrón de VIN en la foto, el script devolvía `ok: false` y terminaba con código `3`. El backend de Node.js trataba cualquier código de salida no-cero como un error del servidor, respondiendo con un error de red `501 (Not Implemented)`. Se modificó `server.js` para capturar el código `3` como una ejecución exitosa de OCR (sin fallas de dependencias) y responder `200 OK` con un mensaje descriptivo en el JSON (`No se detectó un VIN de 17 caracteres...`) para que la UI lo maneje con gracia.</li>
+            <li><strong>Bug de Normalización del VIN:</strong> Se solucionó un bug donde la función `clean_vin` de Python limpiaba los caracteres especiales y eliminaba la letra "I" del texto. Al procesar el prefijo `"VIN 1FT8..."`, la palabra `"VIN"` se transformaba en `"VN"` y se adhería al código del VIN, corrompiendo los primeros dígitos y eliminando los últimos dos caracteres del número original para acomodarse al tamaño de 17. Se añadió una regla regex con límites de palabra (`\bVIN\b`, `\bID\b`) para remover los prefijos antes de normalizar y limpiar los caracteres.</li>
+          </ul>
         </div>
       </section>
 
