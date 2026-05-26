@@ -103,6 +103,16 @@ El problema no es falta de conocimiento tecnico del taller. El problema es que e
 - Se creó y configuró el subagente `jules` como diseñador de UI/UX, quien generó la propuesta técnica en el artefacto `design_proposals.md`.
 - Se construyó y refactorizó la maqueta web interactiva `BMTS_Design_Directions.html` aplicando los estándares de diseño de BoxesMedia360 (incluyendo iluminación ambiental, glassmorphism, diales SVG interactivos y LEDs parpadeantes).
 
+### 2026-05-26
+
+- **Refinamiento de Escenarios Sandbox:** Se completaron los cuatro escenarios interactivos del Multiverse Sandbox solicitados por el usuario.
+- **Escenario A (Stickers QR):** Se sustituyó el código QR estático por un código QR vectorial dinámico real generado localmente con `qrcode.min.js`. Se integró el logotipo de campaña en formato vectorial dentro de las plantillas SVG de los stickers (`racing`, `tech`, `cockpit`), habilitando su descarga.
+- **Escenario B (Reglas de Cumplimiento):** Se conectaron los inputs al almacenamiento local `localStorage` y se añadió el botón "Simular Alerta de Duplicado" que autocompleta el formulario de servicio, activa la advertencia y resalta la casilla de override administrativo con brillo neón.
+- **Escenario C (Facturación Consolidada):** Se implementó el desglose dinámico detallado de mano de obra y refacciones por cada orden. Se creó un modal de previsualización de factura comercial premium Net 30 y se adaptó la hoja de estilos de impresión (`@media print`) para omitir la UI del sistema e imprimir exclusivamente la factura en blanco y negro con resolución física óptima.
+- **Escenario D (Instrucciones OCR):** Se agregaron pasos visuales numerados (1, 2, 3) sobre el flujo de calibración OCR, cuya visibilidad se enlaza dinámicamente con el interruptor del menú Multiverso.
+- **Resolución de Error de Inicialización:** Se detectó y corrigió una descarga incompleta (archivo truncado a 7KB) de `qrcode.min.js` que causaba el error `QRCode is not defined` al inicio de la aplicación. Se descargó el script de producción completo de 19.9KB y se estabilizó la UI de forma definitiva.
+- **Planificación de Railway:** Se inició el diseño de arquitectura y despliegue del proyecto para Railway con capacidad multipantalla móvil.
+
 ## Habilidades De Agentes Confirmadas
 
 El ZIP local confirma habilidades utiles para producto, diseno, Next.js, React Native, seguridad, accesibilidad, planes y debugging. Para BMTS, las prioritarias son:

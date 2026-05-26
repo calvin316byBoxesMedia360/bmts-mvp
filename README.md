@@ -17,16 +17,14 @@ Crear una plataforma operativa para reemplazar papel, hojas sueltas y herramient
 
 ## Estado Actual
 
-Fecha de arranque documental: 2026-05-25.
-
-Se revisaron estos materiales base:
-
-- `BMTS_Admin_Guide.html`
-- `BMTS_Tech_Stack.html`
-- tres transcripciones DOCX de reuniones del 2026-05-18
-- `habilidades-agentes-main.zip`
-
-El repositorio externo de habilidades `calvin316byBoxesMedia360/habilidades-agentes` no estuvo accesible por GitHub desde esta sesion, pero el ZIP local permitio revisar el contenido.
+- **Fecha de corte:** 2026-05-26.
+- **Hito alcanzado:** Prototipo local estabilizado y refinado con 4 escenarios sandbox activos (Multiverse Sandbox).
+- **Funcionalidades Sandbox completadas:**
+  1. *Escenario A (Sticker QR):* Generación de códigos QR vectoriales locales fuera de línea e incrustación de logotipo de campaña vectorial de BMTS en 3 plantillas (`racing`, `tech`, `cockpit`), listos para descargar en SVG.
+  2. *Escenario B (Reglas de Cumplimiento):* Persistencia de umbrales reguladores en `localStorage` y botón de simulación rápida de alerta de duplicado de SmogCheck con bypass admin.
+  3. *Escenario C (Facturación en Lote):* Selección de múltiples órdenes terminadas con desglose dinámico de labor y partes, y vista previa de factura Net 30 premium en modal interactivo optimizado para impresión física o PDF en blanco y negro.
+  4. *Escenario D (Instrucciones OCR):* Guía visual paso a paso (1, 2, 3) sobre el calibrador lado a lado de PaddleOCR en el formulario de VIN, sincronizada con el menú Multiverse.
+- **Estabilización:** Se resolvió el error de carga inicial en consola (`QRCode is not defined` por script truncado) y se optimizaron las dependencias locales.
 
 ## Lectura Ejecutiva
 

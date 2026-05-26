@@ -642,16 +642,115 @@
   </header>
 
   <main>
-    <!-- Selector de Versión Principal (V0.2 vs V0.1) -->
+    <!-- Selector de Versión Principal (V0.3 vs V0.2 vs V0.1) -->
     <div class="version-selector" aria-label="Versión del Reporte">
-      <button class="version-tab active" data-version="v2">Reporte V0.2 (Actual - Estabilización de OCR & UX)</button>
+      <button class="version-tab active" data-version="v3">Reporte V0.3 (Actual - Refinamiento de Escenarios Multiverse Sandbox & Lote)</button>
+      <button class="version-tab" data-version="v2">Reporte V0.2 (Previo - Estabilización de OCR & UX)</button>
       <button class="version-tab" data-version="v1">Reporte V0.1 (Inicial - Planificación de MVP)</button>
     </div>
 
     <!-- ============================================== -->
-    <!-- PANEL REPORTE V0.2 (ACTUAL)                     -->
+    <!-- PANEL REPORTE V0.3 (ACTUAL)                     -->
     <!-- ============================================== -->
-    <div id="panel-v2" class="version-panel active">
+    <div id="panel-v3" class="version-panel active">
+      
+      <!-- Pestañas internas para la versión 0.3 -->
+      <nav class="inner-tabs" aria-label="Secciones de la versión 0.3">
+        <button class="inner-tab active" data-view="v3-admin">Vista Administrativa (Negocio)</button>
+        <button class="inner-tab" data-view="v3-tech">Vista Técnica (Stack & Workflow)</button>
+        <button class="inner-tab" data-view="v3-logs">Estado & Logs de Cambio</button>
+      </nav>
+
+      <!-- V0.3 - VISTA ADMINISTRATIVA -->
+      <section id="view-v3-admin" class="view-content active">
+        <div class="grid two">
+          <div class="card">
+            <h2 class="card-title">🎯 Refinamiento del Multiverse Sandbox</h2>
+            <p>Se implementaron y consolidaron 4 escenarios específicos para permitir evaluar la funcionalidad del MVP por separado o en conjunto, mejorando la toma de decisiones sobre el flujo de trabajo final.</p>
+            <h3>📶 Escenario A: Stickers QR y Logo de Campaña</h3>
+            <p>El código QR pasó de ser un patrón fijo a un código QR dinámico real generado localmente. Incorpora el logotipo oficial de campaña de BMTS en formato vectorial puro para una resolución perfecta de impresión. Disponible en tres diseños: <strong>Racing</strong>, <strong>Clean Tech</strong> y <strong>Cockpit</strong>.</p>
+            <h3>🛡️ Escenario B: Ajustes de Cumplimiento Interactivos</h3>
+            <p>Los parámetros de prevención de duplicados ahora se guardan en el navegador. Un botón de simulación fuerza una advertencia de duplicado para SmogCheck de forma directa, permitiendo probar la justificación de bypass del administrador en segundos.</p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">💼 Facturación Lote y Calibración OCR</h2>
+            <h3>🧾 Escenario C: Desglose y Vista Previa Premium</h3>
+            <p>Al seleccionar múltiples órdenes del cliente comercial <strong>Community Tree Service</strong>, la interfaz muestra el costo detallado unitario compuesto por labor y refacciones de cada orden.</p>
+            <p>El botón de vista previa abre un modal con una factura premium Net 30. Al imprimir o guardar como PDF (Ctrl+P), los estilos de impresión ocultan la aplicación oscura para imprimir una hoja comercial limpia en blanco y negro.</p>
+            <h3>🔍 Escenario D: Guías del Asistente OCR</h3>
+            <p>Se integró una guía paso a paso (1, 2, 3) sobre el flujo de calibración en el formulario de carga de VIN para instruir a los mecánicos sobre el funcionamiento del asistente de comparación lado a lado con PaddleOCR.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- V0.3 - VISTA TÉCNICA -->
+      <section id="view-v3-tech" class="view-content">
+        <div class="grid two">
+          <div class="card">
+            <h2 class="card-title">🛠️ Nuevas Integraciones y Librerías</h2>
+            <h3>📶 Generación Vectorial Local (qrcode.min.js)</h3>
+            <p>Para evitar dependencias de internet o CDNs externas que pongan en riesgo el trabajo en campo, se incorporó la librería local <code>qrcode.min.js</code> (19.9KB) en <code>app/public/</code>. Esta calcula la matriz de módulos y la inyecta como paths vectoriales SVG puros dentro del sticker seleccionado.</p>
+            <h3>🖨️ CSS de Impresión Transaccional</h3>
+            <p>Se redefinieron las reglas de impresión en <code>styles.css</code> para que la factura agrupada del modal <code>#batchInvoicePreviewModal</code> se posicione como elemento de flujo primario y oculte los menús web del fondo, evitando sangrados oscuros o colores innecesarios al imprimir en papel.</p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">📁 Actualizaciones en la Estructura</h2>
+            <ul>
+              <li><strong>app/public/qrcode.min.js:</strong> Biblioteca de generación de QR local-first.</li>
+              <li><strong>app/public/app.js:</strong> Agregadas funciones de cálculo de subtotal consolidado, inyección de paths SVG en layouts, lógica de previsualización y listeners de impresión/cierre.</li>
+              <li><strong>app/public/index.html:</strong> Agregado modal de vista previa imprimible <code>#batchInvoicePreviewModal</code> y bloque instructivo <code>#ocrGuideBox</code>.</li>
+              <li><strong>app/public/styles.css:</strong> Estilos de impresión y modal overlay transaccionales.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- V0.3 - ESTADO Y LOGS DE CAMBIO -->
+      <section id="view-v3-logs" class="view-content">
+        <div class="stat-container">
+          <div class="stat-box">
+            <div class="stat-val">V0.3</div>
+            <div class="stat-lbl">Versión Actual</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">2026-05-26</div>
+            <div class="stat-lbl">Fecha de Corte</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" style="color: var(--success);">ESTABLE</div>
+            <div class="stat-lbl">Estado local</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">4/4</div>
+            <div class="stat-lbl">Escenarios Sandbox Activos</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">🕒 Bitácora de Sandbox y Corrección (2026-05-26)</h2>
+          <div class="timeline">
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-26 20:10 PM</div>
+              <div class="timeline-title">Corrección de qrcode.min.js Truncado</div>
+              <div class="timeline-desc">Se identificó que el script de generación de QR estaba incompleto (7KB en disco) provocando un error de sintaxis y la falla <code>QRCode is not defined</code> al iniciar la aplicación. Se descargó el script completo oficial de 19.9KB solucionando la carga.</div>
+            </div>
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-26 19:40 PM</div>
+              <div class="timeline-title">Implementación de los Escenarios C y D</div>
+              <div class="timeline-desc">Se agregaron los desgloses de labor y partes para órdenes en lote, el modal de vista previa de factura con soporte para impresión Ctrl+P/PDF, y las instrucciones numeradas paso a paso para el asistente de calibración de PaddleOCR.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PANEL REPORTE V0.2 (PREVIO)                     -->
+    <!-- ============================================== -->
+    <div id="panel-v2" class="version-panel">
       
       <!-- Pestañas internas para la versión 0.2 -->
       <nav class="inner-tabs" aria-label="Secciones de la versión 0.2">
@@ -1080,7 +1179,7 @@
   <!-- LÓGICA DE INTERACCIÓN DE PESTAÑAS -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // 1. Selector de Versión Principal (V0.2 vs V0.1)
+      // 1. Selector de Versión Principal (V0.3 vs V0.2 vs V0.1)
       const versionTabs = document.querySelectorAll(".version-tab");
       const versionPanels = document.querySelectorAll(".version-panel");
 
@@ -1095,18 +1194,17 @@
         });
       });
 
-      // 2. Selector de Pestañas Internas (V0.2 Admin vs Técnico vs Logs)
-      const innerTabs = document.querySelectorAll(".inner-tab");
-      const viewContents = document.querySelectorAll(".view-content");
-
-      innerTabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-          innerTabs.forEach(t => t.classList.remove("active"));
-          viewContents.forEach(c => c.classList.remove("active"));
-
-          tab.classList.add("active");
-          const targetId = `view-${tab.dataset.view}`;
-          document.getElementById(targetId).classList.add("active");
+      // 2. Selector de Pestañas Internas (Scopiado por Panel de Versión)
+      versionPanels.forEach(panel => {
+        const tabs = panel.querySelectorAll(".inner-tab");
+        const views = panel.querySelectorAll(".view-content");
+        tabs.forEach(tab => {
+          tab.addEventListener("click", () => {
+            tabs.forEach(t => t.classList.remove("active"));
+            views.forEach(v => v.classList.remove("active"));
+            tab.classList.add("active");
+            panel.querySelector(`#view-${tab.dataset.view}`).classList.add("active");
+          });
         });
       });
 
