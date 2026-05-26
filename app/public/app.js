@@ -645,7 +645,7 @@ function onSandboxTogglesUpdated() {
     }
   }
 
-  render();
+  if (state.db) render();
 }
 
 function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
