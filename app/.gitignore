@@ -1,0 +1,14 @@
+.venv/
+.paddlex/
+.paddlex2/
+.paddlex_runtime/
+.paddlex_runtime_old/
+.cache/
+.cache_runtime/
+.home/
+.home_runtime/
+*_old/
+data/uploads/
+node_modules/
+__pycache__/
+*.pyc
