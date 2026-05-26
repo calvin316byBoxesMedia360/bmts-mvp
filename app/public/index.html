@@ -18,6 +18,36 @@
     </div>
   </header>
 
+  <!-- Sandbox Control Panel (UI) -->
+  <div id="sandboxControlPanel" class="sandbox-panel">
+    <div class="sandbox-title">
+      <span class="sandbox-dot"></span>
+      <strong>MULTIVERSE MENU (SANDBOX)</strong>
+    </div>
+    <div class="sandbox-toggles">
+      <label class="switch-container">
+        <input type="checkbox" id="toggleScenarioA" checked>
+        <span class="switch-slider"></span>
+        <span class="switch-label">Sticker QR (A)</span>
+      </label>
+      <label class="switch-container">
+        <input type="checkbox" id="toggleScenarioB" checked>
+        <span class="switch-slider"></span>
+        <span class="switch-label">Ajustes Cumplimiento (B)</span>
+      </label>
+      <label class="switch-container">
+        <input type="checkbox" id="toggleScenarioC" checked>
+        <span class="switch-slider"></span>
+        <span class="switch-label">Facturación Lote (C)</span>
+      </label>
+      <label class="switch-container">
+        <input type="checkbox" id="toggleScenarioD" checked>
+        <span class="switch-slider"></span>
+        <span class="switch-label">Calibración OCR (D)</span>
+      </label>
+    </div>
+  </div>
+
   <main class="layout">
     <aside class="sidebar">
       <section class="panel">
@@ -36,6 +66,7 @@
         <button class="tab" data-view="history">Historial</button>
         <button class="tab" data-view="order">Servicio</button>
         <button class="tab" data-view="invoice">Invoice</button>
+        <button class="tab" id="complianceTabBtn" data-view="compliance" style="display: none;">Cumplimiento</button>
       </nav>
 
       <section id="birthView" class="view active">
@@ -209,40 +240,126 @@
 
       <section id="invoiceView" class="view">
         <div class="split">
-          <form id="invoiceForm" class="panel form-panel">
-            <div class="panel-title">
-              <h2>Invoice basico</h2>
-              <span class="badge">por orden</span>
+          <div class="invoice-left-pane">
+            <div id="batchInvoiceActionContainer" class="batch-invoice-bar" style="display: none; margin-bottom: 14px;">
+              <button type="button" id="batchInvoiceBtn" class="primary w-full">Facturar en Lote (Consolidado)</button>
             </div>
-            <label>Orden terminada
-              <select name="workOrderId" class="input" required></select>
-            </label>
-            <div class="grid three">
-              <label>Subtotal
-                <input name="subtotal" class="input" type="number" min="0" step="0.01" value="0">
+
+            <form id="invoiceForm" class="panel form-panel">
+              <div class="panel-title">
+                <h2>Invoice basico</h2>
+                <span class="badge">por orden</span>
+              </div>
+              <label>Orden terminada
+                <select name="workOrderId" class="input" required></select>
               </label>
-              <label>Tax
-                <input name="tax" class="input" type="number" min="0" step="0.01" value="0">
+              <div class="grid three">
+                <label>Subtotal
+                  <input name="subtotal" class="input" type="number" min="0" step="0.01" value="0">
+                </label>
+                <label>Tax
+                  <input name="tax" class="input" type="number" min="0" step="0.01" value="0">
+                </label>
+                <label>Total
+                  <input name="total" class="input" type="number" min="0" step="0.01" value="0">
+                </label>
+              </div>
+              <label>Notas internas
+                <textarea name="internalNotes" class="input textarea"></textarea>
               </label>
-              <label>Total
-                <input name="total" class="input" type="number" min="0" step="0.01" value="0">
+              <label>Notas para cliente
+                <textarea name="clientNotes" class="input textarea"></textarea>
               </label>
+              <button class="primary" type="submit">Crear invoice</button>
+              <p id="invoiceFormMsg" class="message"></p>
+            </form>
+
+            <div id="batchInvoicePanel" class="panel form-panel" style="display: none;">
+              <div class="panel-title">
+                <h2>Facturación Consolidada</h2>
+                <button type="button" id="closeBatchPanelBtn" class="tool-button">Cancelar</button>
+              </div>
+              <p class="text-xs text-zinc-400">Selecciona las órdenes de trabajo completadas y sin facturar para consolidar:</p>
+              
+              <div id="unbilledOrdersContainer" class="unbilled-orders-list">
+                <!-- Dynamically rendered checkbox list of unbilled work orders -->
+              </div>
+
+              <div class="grid three">
+                <label>Subtotal Consolidado
+                  <input name="batchSubtotal" id="batchSubtotal" class="input" type="number" readonly value="0">
+                </label>
+                <label>Tax (8.25%)
+                  <input name="batchTax" id="batchTax" class="input" type="number" readonly value="0">
+                </label>
+                <label>Total Consolidado
+                  <input name="batchTotal" id="batchTotal" class="input" type="number" readonly value="0">
+                </label>
+              </div>
+
+              <label>Notas para Cliente
+                <textarea name="batchClientNotes" id="batchClientNotes" class="input textarea" placeholder="Invoice agrupado para flotas..."></textarea>
+              </label>
+
+              <button type="button" id="createBatchInvoiceBtn" class="primary">Generar Factura Consolidada</button>
+              <p id="batchInvoiceMsg" class="message"></p>
             </div>
-            <label>Notas internas
-              <textarea name="internalNotes" class="input textarea"></textarea>
-            </label>
-            <label>Notas para cliente
-              <textarea name="clientNotes" class="input textarea"></textarea>
-            </label>
-            <button class="primary" type="submit">Crear invoice</button>
-            <p id="invoiceFormMsg" class="message"></p>
-          </form>
+          </div>
+
           <div class="panel">
             <div class="panel-title">
               <h2>Invoices</h2>
               <span id="invoiceCount" class="badge">0</span>
             </div>
             <div id="invoiceList" class="order-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Scenario B: Compliance and Overrides Panel -->
+      <section id="complianceView" class="view">
+        <div class="split">
+          <form id="complianceForm" class="panel form-panel">
+            <div class="panel-title">
+              <h2>Configuración de Reglas</h2>
+              <span class="badge required">Admin</span>
+            </div>
+            
+            <label>Umbral de Duplicados para SmogCheck (Meses)
+              <input name="smogThreshold" type="number" class="input" value="3" min="1" required>
+            </label>
+
+            <label>Umbral de Cambio de Aceite (Días)
+              <input name="oilThreshold" type="number" class="input" value="30" min="1" required>
+            </label>
+
+            <label>Umbral de Asistencia en Carretera (Días)
+              <input name="roadsideThreshold" type="number" class="input" value="7" min="1" required>
+            </label>
+
+            <button class="primary" type="submit">Guardar Reglas</button>
+            <p id="complianceFormMsg" class="message"></p>
+          </form>
+
+          <div class="panel">
+            <div class="panel-title">
+              <h2>Eventos de Autorización (Overrides)</h2>
+              <span id="overrideCount" class="badge">0</span>
+            </div>
+            <div class="table-container" style="overflow-x: auto;">
+              <table class="data-table" id="overrideTable">
+                <thead>
+                  <tr>
+                    <th>Unidad/Placa</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Mecánico/Admin</th>
+                    <th>Justificación</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -263,8 +380,62 @@
           <a target="_blank" rel="noreferrer">Abrir enlace de escaneo</a>
         </div>
       </div>
+
+      <!-- Scenario A: Fleet QR Generator Sticker Section -->
+      <div id="scenarioASection" class="scenario-a-container" style="display: none; margin-top: 24px; border-top: 1px dashed rgba(255, 255, 255, 0.08); padding-top: 20px;">
+        <div class="scenario-header" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px;">
+          <h3 style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; color: #fff; margin: 0;">Diseño de Sticker QR de Flota</h3>
+          <select id="stickerLayoutSelect" class="input select-mini" style="max-width: 160px; min-height: 32px; padding: 4px 8px; font-size: 12px;">
+            <option value="racing">Option A: Racing</option>
+            <option value="tech">Option B: Clean Tech</option>
+            <option value="cockpit">Option C: Cockpit</option>
+          </select>
+        </div>
+        <div class="sticker-preview-wrapper" id="stickerPreviewWrapper" style="display: flex; justify-content: center; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 12px;">
+          <!-- Dynamically injected SVG -->
+        </div>
+        <button type="button" id="downloadStickerBtn" class="tool-button w-full">Descargar SVG de Calcomanía</button>
+      </div>
     </div>
   </template>
+
+  <!-- Scenario D: OCR Calibration Modal -->
+  <div id="ocrCalibrationModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content panel">
+      <div class="panel-title">
+        <h2>Asistente de Calibración OCR</h2>
+        <button type="button" id="closeOcrModalBtn" class="tool-button">Cerrar</button>
+      </div>
+      <p class="text-xs text-zinc-400" style="margin-bottom: 16px;">Compara el texto extraído por PaddleOCR con la imagen original. Corrige cualquier error de lectura antes de consultar vPIC/NHTSA.</p>
+      
+      <div class="calibration-split">
+        <div class="calibration-image-pane">
+          <strong style="display: block; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; color: #71717a;">Imagen del Chasis</strong>
+          <div class="calibration-image-container">
+            <img id="calibrationImage" src="" alt="Imagen original del VIN">
+          </div>
+        </div>
+        
+        <div class="calibration-edit-pane">
+          <label>Texto Bruto Detectado (OCR)
+            <textarea id="ocrRawText" class="input textarea" readonly style="background: rgba(6, 6, 8, 0.4); color: #71717a; border-color: rgba(255, 255, 255, 0.04); font-family: monospace;"></textarea>
+          </label>
+          
+          <label>VIN Decodificado Propuesto (Editar si es necesario)
+            <input id="ocrProposedVin" class="input font-mono" maxlength="17" style="font-size: 16px; letter-spacing: 0.1em; color: var(--brand);">
+          </label>
+          
+          <div class="vin-validation-box" style="margin-top: 8px;">
+            <span id="ocrVinValidation" class="vin-validation">17 caracteres requeridos</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-actions" style="margin-top: 20px;">
+        <button type="button" id="confirmOcrVinBtn" class="primary w-full">Confirmar VIN y Consultar vPIC</button>
+      </div>
+    </div>
+  </div>
 
   <script src="/app.js"></script>
 </body>

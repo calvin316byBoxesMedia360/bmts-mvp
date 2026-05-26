@@ -419,6 +419,48 @@ async function api(req, res, url) {
     return;
   }
 
+  if (req.method === "POST" && url.pathname === "/api/invoices/batch") {
+    const input = await readJson(req);
+    if (!input.workOrderIds || !input.workOrderIds.length) {
+      send(res, 400, { error: "Se requiere al menos una orden de trabajo." });
+      return;
+    }
+    const orders = db.workOrders.filter(item => input.workOrderIds.includes(item.id));
+    if (orders.length !== input.workOrderIds.length) {
+      send(res, 400, { error: "Una o más órdenes no existen." });
+      return;
+    }
+    const firstOrder = orders[0];
+    const invoice = {
+      id: newId("inv"),
+      invoiceNumber: `BMTS-BATCH-${String(db.invoices.length + 1).padStart(4, "0")}`,
+      workOrderIds: input.workOrderIds,
+      workOrderId: firstOrder.id,
+      vehicleId: firstOrder.vehicleId,
+      status: "borrador",
+      subtotal: Number(input.subtotal || 0),
+      tax: Number(input.tax || 0),
+      total: Number(input.total || 0),
+      internalNotes: input.internalNotes || "Factura de lote consolidada",
+      clientNotes: input.clientNotes || "",
+      createdAt: new Date().toISOString()
+    };
+    db.invoices.unshift(invoice);
+    
+    const distinctVehicleIds = [...new Set(orders.map(o => o.vehicleId))];
+    for (const vId of distinctVehicleIds) {
+      addHistory(db, vId, "invoice_created", `Invoice de lote creado: ${invoice.invoiceNumber}`, {
+        invoiceId: invoice.id,
+        total: invoice.total,
+        batchCount: orders.length
+      });
+    }
+    
+    await writeDb(db);
+    send(res, 201, { invoice, db });
+    return;
+  }
+
   notFound(res);
 }
 
