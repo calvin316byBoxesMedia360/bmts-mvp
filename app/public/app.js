@@ -204,7 +204,10 @@ function renderOrders() {
       <small>${order.requestedDate}</small>
       ${order.adminOverride ? `<p class="message error">Excepcion admin: ${order.overrideReason}</p>` : ""}
       <div class="status-controls">
-        ${["recibido", "revisando", "en_trabajo", "listo", "entregado"].map((status) => `<button data-status="${status}" data-id="${order.id}">${status}</button>`).join("")}
+        ${["recibido", "revisando", "en_trabajo", "listo", "entregado"].map((status) => {
+          const isActive = order.status === status;
+          return `<button class="${isActive ? 'active' : ''}" data-status="${status}" data-id="${order.id}">${status}</button>`;
+        }).join("")}
       </div>
     `;
     list.appendChild(node);
