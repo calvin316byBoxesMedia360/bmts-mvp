@@ -947,6 +947,20 @@ $("#complianceForm").smogThreshold.value = rules.smog;
 $("#complianceForm").oilThreshold.value = rules.oil;
 $("#complianceForm").roadsideThreshold.value = rules.roadside;
 
+$("#complianceForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const smog = parseInt(event.currentTarget.smogThreshold.value, 10) || 3;
+  const oil = parseInt(event.currentTarget.oilThreshold.value, 10) || 30;
+  const roadside = parseInt(event.currentTarget.roadsideThreshold.value, 10) || 7;
+  
+  localStorage.setItem("bmts_rules", JSON.stringify({ smog, oil, roadside }));
+  setMessage("#complianceFormMsg", "Reglas de cumplimiento actualizadas.", "ok");
+  
+  setTimeout(() => {
+    setMessage("#complianceFormMsg", "", "");
+  }, 3000);
+});
+
 // Initial state updates
 onSandboxTogglesUpdated();
 
