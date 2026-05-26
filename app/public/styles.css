@@ -802,15 +802,82 @@ code {
   cursor: pointer;
 }
 
-/* Responsiveness */
+/* Responsiveness & Mobile Optimizations */
 @media (max-width: 920px) {
-  .layout, .split {
+  .toggle-sidebar-btn {
+    display: inline-flex !important;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    position: relative;
+    padding: 10px;
+  }
+  
+  .split {
     grid-template-columns: 1fr;
   }
 
   .grid.two, .grid.three {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
+
+  /* Overlay sidebar for unit list on mobile */
+  .sidebar {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    z-index: 500;
+    background: rgba(13, 13, 17, 0.95);
+    border: 1px solid var(--brand);
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+    padding: 16px;
+    animation: slideDown 0.25s ease-out;
+  }
+
+  .sidebar.show {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .vehicle-list {
+    max-height: 45vh; /* slightly shorter to avoid covering whole screen */
+  }
+
+  /* Optimize touch target sizes */
+  .input, .primary, .secondary, .tool-button {
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .tab {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .status-controls button {
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* Tables inside invoice preview modal */
+  .printable-invoice table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* --- MULTIVERSE SANDBOX CUSTOM STYLING --- */

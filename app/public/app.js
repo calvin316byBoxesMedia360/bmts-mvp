@@ -115,6 +115,11 @@ function renderVehicles() {
     `;
     button.addEventListener("click", () => {
       state.selectedVehicleId = vehicle.id;
+      // Colapsar el panel lateral en móviles tras seleccionar una unidad
+      const sidebar = $(".sidebar");
+      if (sidebar && window.innerWidth <= 920) {
+        sidebar.classList.remove("show");
+      }
       render();
     });
     list.appendChild(button);
@@ -1024,6 +1029,26 @@ $("#closeBatchPreviewModalBtn").addEventListener("click", () => {
 $("#printBatchInvoiceBtn").addEventListener("click", () => {
   window.print();
 });
+
+// Toggle Sidebar on mobile
+const toggleSidebarBtn = $("#toggleSidebarBtn");
+if (toggleSidebarBtn) {
+  toggleSidebarBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const sidebar = $(".sidebar");
+    if (sidebar) {
+      sidebar.classList.toggle("show");
+    }
+  });
+  
+  // Close sidebar on mobile when clicking outside
+  document.addEventListener("click", (e) => {
+    const sidebar = $(".sidebar");
+    if (sidebar && sidebar.classList.contains("show") && !sidebar.contains(e.target) && e.target !== toggleSidebarBtn) {
+      sidebar.classList.remove("show");
+    }
+  });
+}
 
 $("#createBatchInvoiceBtn").addEventListener("click", async () => {
   const checkboxes = $$("input[name='batchOrder']:checked", $("#unbilledOrdersContainer"));

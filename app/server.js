@@ -231,12 +231,11 @@ async function api(req, res, url) {
 
     const result = await runPaddleVinOcr(vinPhotoPath);
     if (result.code !== 0 && result.code !== 3) {
-      send(res, 501, {
-        error: result.error || "PaddleOCR no pudo ejecutarse.",
+      send(res, 200, {
+        ok: false,
+        vin: "",
         provider: "PaddleOCR",
-        fallbackProvider: "Google Vision API",
-        detail: result.detail || result.stderr || "",
-        nextStep: "Instalar PaddleOCR localmente o conectar Google Vision como fallback."
+        error: "El lector OCR de VIN no está disponible en la nube (límite de memoria en hosting gratuito). Escribe o pega el VIN manualmente."
       });
       return;
     }
