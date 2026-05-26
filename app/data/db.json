@@ -11,6 +11,87 @@
   ],
   "vehicles": [
     {
+      "id": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "clientId": "client-community-tree",
+      "unitNumber": "CT200",
+      "plate": "7ZXY316",
+      "vin": "1G1ZD5ST4NF156068",
+      "make": "CHEVROLET",
+      "model": "Malibu",
+      "year": "2022",
+      "bodyClass": "Sedan/Saloon",
+      "engine": "In-Line 4 cyl 1.5L",
+      "manufacturer": "GENERAL MOTORS LLC",
+      "vehicleType": "PASSENGER CAR",
+      "fuelType": "Gasoline",
+      "gvwr": "Class 1: 6,000 lb or less (2,722 kg or less)",
+      "driveType": "FWD/Front-Wheel Drive",
+      "plant": "KANSAS CITY, KANSAS, UNITED STATES (USA)",
+      "nhtsaErrorText": "0 - VIN decoded clean. Check Digit (9th position) is correct",
+      "notes": "",
+      "photoUrl": "/uploads/vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171.png",
+      "vinPhotoUrl": "/uploads/vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171_vin.jpg",
+      "qrToken": "bmts_5af13ea8c35cf746f85cf64d",
+      "qrValue": "/v/bmts_5af13ea8c35cf746f85cf64d",
+      "nextSmogCheckDue": "2026-05-29",
+      "createdAt": "2026-05-26T02:35:26.494Z",
+      "updatedAt": "2026-05-26T02:35:26.494Z"
+    },
+    {
+      "id": "vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20",
+      "clientId": "client-community-tree",
+      "unitNumber": "CT100",
+      "plate": "CLVN316",
+      "vin": "3VWD17AJ1FM411425",
+      "make": "VOLKSWAGEN",
+      "model": "Jetta",
+      "year": "2015",
+      "bodyClass": "Sedan/Saloon",
+      "engine": "4 cyl 1.798000L",
+      "manufacturer": "VOLKSWAGEN DE MEXICO SA DE CV",
+      "vehicleType": "PASSENGER CAR",
+      "fuelType": "Gasoline",
+      "gvwr": "Class 1: 6,000 lb or less (2,722 kg or less)",
+      "driveType": "",
+      "plant": "PUEBLA, MEXICO",
+      "nhtsaErrorText": "0 - VIN decoded clean. Check Digit (9th position) is correct",
+      "notes": "",
+      "photoUrl": "/uploads/vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20.jpg",
+      "vinPhotoUrl": "/uploads/vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20_vin.jpg",
+      "qrToken": "bmts_db1c34353a2ae1972148ee48",
+      "qrValue": "/v/bmts_db1c34353a2ae1972148ee48",
+      "nextSmogCheckDue": "2026-05-28",
+      "createdAt": "2026-05-26T02:00:39.581Z",
+      "updatedAt": "2026-05-26T02:00:39.581Z"
+    },
+    {
+      "id": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "clientId": "client-community-tree",
+      "unitNumber": "CT100",
+      "plate": "CLVN316",
+      "vin": "3VWD17AJ1FM411425",
+      "make": "VOLKSWAGEN",
+      "model": "Jetta",
+      "year": "2015",
+      "bodyClass": "Sedan/Saloon",
+      "engine": "4 cyl 1.798000L",
+      "manufacturer": "VOLKSWAGEN DE MEXICO SA DE CV",
+      "vehicleType": "PASSENGER CAR",
+      "fuelType": "Gasoline",
+      "gvwr": "Class 1: 6,000 lb or less (2,722 kg or less)",
+      "driveType": "",
+      "plant": "PUEBLA, MEXICO",
+      "nhtsaErrorText": "0 - VIN decoded clean. Check Digit (9th position) is correct",
+      "notes": "",
+      "photoUrl": "/uploads/vehicle_55d96517-7443-4e14-9a03-72c233897392.png",
+      "vinPhotoUrl": "/uploads/vehicle_55d96517-7443-4e14-9a03-72c233897392_vin.jpg",
+      "qrToken": "bmts_112c5418df54b4bf8abe26c7",
+      "qrValue": "/v/bmts_112c5418df54b4bf8abe26c7",
+      "nextSmogCheckDue": "",
+      "createdAt": "2026-05-26T01:36:42.723Z",
+      "updatedAt": "2026-05-26T01:36:42.723Z"
+    },
+    {
       "id": "vehicle_fc5fcf88-f4d2-493c-9f3c-53301aba1785",
       "clientId": "client-community-tree",
       "unitNumber": "CT-DEMO-001",
@@ -30,9 +111,214 @@
       "updatedAt": "2026-05-25T19:02:53.465Z"
     }
   ],
-  "workOrders": [],
+  "workOrders": [
+    {
+      "id": "wo_fc81f4bb-7ec6-4362-b53d-5c9c445a1570",
+      "vehicleId": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "serviceType": "SmogCheck",
+      "status": "recibido",
+      "requestedDate": "2026-05-26",
+      "notes": "CT200 · 7ZXY316",
+      "labor": "test de inicio",
+      "parts": "cc",
+      "adminOverride": true,
+      "overrideReason": "test",
+      "createdAt": "2026-05-26T02:46:18.649Z",
+      "updatedAt": "2026-05-26T02:46:18.649Z",
+      "completedAt": ""
+    },
+    {
+      "id": "wo_fdbd5e67-ed22-45eb-aab1-240402108ab1",
+      "vehicleId": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "serviceType": "SmogCheck",
+      "status": "recibido",
+      "requestedDate": "2026-05-29",
+      "notes": "CT200 · 7ZXY316",
+      "labor": "test de registro",
+      "parts": "",
+      "adminOverride": false,
+      "overrideReason": "",
+      "createdAt": "2026-05-26T02:44:23.694Z",
+      "updatedAt": "2026-05-26T02:44:23.694Z",
+      "completedAt": ""
+    },
+    {
+      "id": "wo_83b8d367-7009-4918-bdea-d3caa59f8163",
+      "vehicleId": "vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20",
+      "serviceType": "SmogCheck",
+      "status": "recibido",
+      "requestedDate": "2026-05-28",
+      "notes": "xx",
+      "labor": "",
+      "parts": "",
+      "adminOverride": false,
+      "overrideReason": "",
+      "createdAt": "2026-05-26T02:02:30.673Z",
+      "updatedAt": "2026-05-26T02:02:30.673Z",
+      "completedAt": ""
+    },
+    {
+      "id": "wo_0e357235-62e5-4d13-b419-39d6972c6f28",
+      "vehicleId": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "serviceType": "SmogCheck",
+      "status": "recibido",
+      "requestedDate": "2026-05-26",
+      "notes": "",
+      "labor": "",
+      "parts": "",
+      "adminOverride": false,
+      "overrideReason": "",
+      "createdAt": "2026-05-26T01:38:06.568Z",
+      "updatedAt": "2026-05-26T01:38:06.568Z",
+      "completedAt": ""
+    },
+    {
+      "id": "wo_8895873a-5ac0-4e28-8e57-279641e3079b",
+      "vehicleId": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "serviceType": "SmogCheck",
+      "status": "recibido",
+      "requestedDate": "2026-05-29",
+      "notes": "cambio aceite y control de smogcheck",
+      "labor": "6 horas",
+      "parts": "aceite\nfiltro",
+      "adminOverride": false,
+      "overrideReason": "",
+      "createdAt": "2026-05-26T01:38:06.346Z",
+      "updatedAt": "2026-05-26T01:38:06.346Z",
+      "completedAt": ""
+    }
+  ],
   "invoices": [],
   "historyEvents": [
+    {
+      "id": "event_bd75abfe-3081-48f9-b299-f849fc38924f",
+      "vehicleId": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "type": "work_order_created",
+      "title": "Orden creada: SmogCheck",
+      "detail": {
+        "workOrderId": "wo_fc81f4bb-7ec6-4362-b53d-5c9c445a1570",
+        "status": "recibido",
+        "adminOverride": true
+      },
+      "createdAt": "2026-05-26T02:46:18.649Z"
+    },
+    {
+      "id": "event_56d4cbbd-d9a3-4cd4-bca1-7618b66d5879",
+      "vehicleId": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "type": "work_order_created",
+      "title": "Orden creada: SmogCheck",
+      "detail": {
+        "workOrderId": "wo_fdbd5e67-ed22-45eb-aab1-240402108ab1",
+        "status": "recibido",
+        "adminOverride": false
+      },
+      "createdAt": "2026-05-26T02:44:23.694Z"
+    },
+    {
+      "id": "event_f26b5381-5366-44e6-8fd1-5a91dfb51b85",
+      "vehicleId": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "type": "qr_assigned",
+      "title": "QR asignado al vehiculo",
+      "detail": {
+        "qrValue": "/v/bmts_5af13ea8c35cf746f85cf64d"
+      },
+      "createdAt": "2026-05-26T02:35:26.494Z"
+    },
+    {
+      "id": "event_23eabfa8-9ed7-49fe-bb65-ebb274a05b41",
+      "vehicleId": "vehicle_c1157f3f-64b8-43aa-aa0f-4dedee353171",
+      "type": "birth_record",
+      "title": "Partida de nacimiento creada",
+      "detail": {
+        "unitNumber": "CT200",
+        "plate": "7ZXY316",
+        "vin": "1G1ZD5ST4NF156068",
+        "qrToken": "bmts_5af13ea8c35cf746f85cf64d"
+      },
+      "createdAt": "2026-05-26T02:35:26.494Z"
+    },
+    {
+      "id": "event_a391b361-fcdc-49a1-90d4-fa1aa7a94b86",
+      "vehicleId": "vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20",
+      "type": "work_order_created",
+      "title": "Orden creada: SmogCheck",
+      "detail": {
+        "workOrderId": "wo_83b8d367-7009-4918-bdea-d3caa59f8163",
+        "status": "recibido",
+        "adminOverride": false
+      },
+      "createdAt": "2026-05-26T02:02:30.674Z"
+    },
+    {
+      "id": "event_60a17db9-3cee-467a-a8dd-3dd88a5555fe",
+      "vehicleId": "vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20",
+      "type": "qr_assigned",
+      "title": "QR asignado al vehiculo",
+      "detail": {
+        "qrValue": "/v/bmts_db1c34353a2ae1972148ee48"
+      },
+      "createdAt": "2026-05-26T02:00:39.581Z"
+    },
+    {
+      "id": "event_46390740-e8e0-4917-a5ad-db99e43d07bc",
+      "vehicleId": "vehicle_879eab07-940f-4c1e-9cef-d0d31c0eca20",
+      "type": "birth_record",
+      "title": "Partida de nacimiento creada",
+      "detail": {
+        "unitNumber": "CT100",
+        "plate": "CLVN316",
+        "vin": "3VWD17AJ1FM411425",
+        "qrToken": "bmts_db1c34353a2ae1972148ee48"
+      },
+      "createdAt": "2026-05-26T02:00:39.581Z"
+    },
+    {
+      "id": "event_8714e88f-2463-4090-9190-930c9e257ae7",
+      "vehicleId": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "type": "work_order_created",
+      "title": "Orden creada: SmogCheck",
+      "detail": {
+        "workOrderId": "wo_0e357235-62e5-4d13-b419-39d6972c6f28",
+        "status": "recibido",
+        "adminOverride": false
+      },
+      "createdAt": "2026-05-26T01:38:06.568Z"
+    },
+    {
+      "id": "event_a642bdfa-cda9-40ec-8dfa-6cba9b26076b",
+      "vehicleId": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "type": "work_order_created",
+      "title": "Orden creada: SmogCheck",
+      "detail": {
+        "workOrderId": "wo_8895873a-5ac0-4e28-8e57-279641e3079b",
+        "status": "recibido",
+        "adminOverride": false
+      },
+      "createdAt": "2026-05-26T01:38:06.347Z"
+    },
+    {
+      "id": "event_84b89f36-f313-4d0f-b043-5d592831ee23",
+      "vehicleId": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "type": "qr_assigned",
+      "title": "QR asignado al vehiculo",
+      "detail": {
+        "qrValue": "/v/bmts_112c5418df54b4bf8abe26c7"
+      },
+      "createdAt": "2026-05-26T01:36:42.723Z"
+    },
+    {
+      "id": "event_1e4efdab-12c3-4a15-a4f6-a8f0573a1322",
+      "vehicleId": "vehicle_55d96517-7443-4e14-9a03-72c233897392",
+      "type": "birth_record",
+      "title": "Partida de nacimiento creada",
+      "detail": {
+        "unitNumber": "CT100",
+        "plate": "CLVN316",
+        "vin": "3VWD17AJ1FM411425",
+        "qrToken": "bmts_112c5418df54b4bf8abe26c7"
+      },
+      "createdAt": "2026-05-26T01:36:42.723Z"
+    },
     {
       "id": "event_dec06303-370e-465e-9283-275c3713d160",
       "vehicleId": "vehicle_fc5fcf88-f4d2-493c-9f3c-53301aba1785",

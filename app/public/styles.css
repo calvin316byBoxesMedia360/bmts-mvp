@@ -1059,7 +1059,7 @@ code {
     display: none;
   }
 
-  .topbar, .sidebar, .tabs, form, .order-list, .timeline, #sandboxControlPanel {
+  .topbar, .sidebar, .tabs, form, .order-list, .timeline, #sandboxControlPanel, .no-print {
     display: none !important;
   }
 
@@ -1086,5 +1086,37 @@ code {
     border: 4px solid black;
     color: black;
     box-shadow: none;
+  }
+
+  /* Reset modal overlay for printing only when it's open */
+  #batchInvoicePreviewModal[style*="display: flex"],
+  body.printing-batch-active #batchInvoicePreviewModal {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+    height: auto !important;
+    width: auto !important;
+    z-index: auto !important;
+  }
+  
+  /* Reset modal content for printing */
+  #batchInvoicePreviewModal[style*="display: flex"] .modal-content,
+  body.printing-batch-active .modal-content {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* If the batch invoice modal is open, hide all other direct descendants of body to prevent background bleed */
+  body:has(#batchInvoicePreviewModal[style*="display: flex"]) > *:not(#batchInvoicePreviewModal),
+  body.printing-batch-active > *:not(#batchInvoicePreviewModal) {
+    display: none !important;
   }
 }

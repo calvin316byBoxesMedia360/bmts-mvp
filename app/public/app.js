@@ -645,12 +645,41 @@ function onSandboxTogglesUpdated() {
     }
   }
 
+  // D: OCR Quick Guide Box
+  const ocrGuide = $("#ocrGuideBox");
+  if (ocrGuide) {
+    ocrGuide.style.display = scD ? "block" : "none";
+  }
+
   if (state.db) render();
+}
+
+function getQRCodeSVGPaths(qrUrl, targetSize = 180) {
+  const tempDiv = document.createElement("div");
+  const qr = new QRCode(tempDiv, {
+    text: qrUrl,
+    width: 256,
+    height: 256,
+    correctLevel: 0
+  });
+  const modules = qr._oQRCode.modules;
+  const count = modules.length;
+  const cellSize = targetSize / count;
+  let paths = "";
+  for (let r = 0; r < count; r++) {
+    for (let c = 0; c < count; c++) {
+      if (modules[r][c]) {
+        paths += `<rect x="${(c * cellSize).toFixed(2)}" y="${(r * cellSize).toFixed(2)}" width="${cellSize.toFixed(2)}" height="${cellSize.toFixed(2)}" fill="#000000"/> `;
+      }
+    }
+  }
+  return { paths, count, cellSize };
 }
 
 function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
   const finalQrUrl = `${location.origin}${qrUrl}`;
   if (layout === "racing") {
+    const qrPaths = getQRCodeSVGPaths(finalQrUrl, 180).paths;
     return `
       <svg viewBox="0 0 450 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" class="font-racing font-bold">
         <defs>
@@ -662,29 +691,32 @@ function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
         <rect x="5" y="5" width="440" height="590" fill="#0D0D11" stroke="#CCFF00" stroke-width="4" rx="4"/>
         <rect x="5" y="5" width="440" height="24" fill="url(#diagonal-stripes)" />
         <rect x="5" y="571" width="440" height="24" fill="url(#diagonal-stripes)" />
-        <g transform="translate(50, 60) skewX(-10)">
-          <rect x="0" y="0" width="330" height="75" fill="#CCFF00" stroke="#000000" stroke-width="3" />
-          <text x="165" y="52" font-family="'Archivo Black', sans-serif" font-size="36" font-weight="900" fill="#000000" text-anchor="middle">BMTS</text>
+        
+        <!-- Vector BMTS Campaign Logo Header (Skewed & Dynamic) -->
+        <g transform="translate(70, 60) skewX(-10)">
+          <!-- Dynamic Star + Orbital Rings Icon -->
+          <g transform="translate(0, 0)">
+            <polygon points="25,5 30,18 43,18 33,26 37,39 25,31 13,39 17,26 7,18 20,18" fill="#CCFF00"/>
+            <path d="M 3,13 C 9,3 35,-1 46,10" stroke="#CCFF00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 47,27 C 41,37 15,41 4,30" stroke="#CCFF00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <polygon points="25,10 28,19 36,19 30,24 33,33 25,28 17,33 20,19 14,19 22,19" fill="#0D0D11"/>
+          </g>
+          <!-- Bold slanted BMTS text -->
+          <text x="60" y="30" font-family="'Archivo Black', sans-serif" font-size="34" font-weight="900" fill="#CCFF00" letter-spacing="-1">BMTS</text>
+          <!-- Subtext -->
+          <text x="60" y="45" font-family="'Barlow Condensed', sans-serif" font-size="12" font-weight="900" fill="#FFFFFF" letter-spacing="3.5">MOBILITY GROUP</text>
         </g>
-        <text x="225" y="172" font-family="'Barlow Condensed', sans-serif" font-size="20" fill="#E2E8F0" text-anchor="middle" font-weight="800" letter-spacing="4">MOBILITY GROUP</text>
-        <text x="225" y="194" font-family="monospace" font-size="11" fill="#71717A" text-anchor="middle">UNIT: ${unitNumber || "N/A"} · PLATE: ${plate || "N/A"}</text>
-        <line x1="40" y1="215" x2="410" y2="215" stroke="#CCFF00" stroke-width="2" stroke-dasharray="10 5"/>
+        
+        <text x="225" y="178" font-family="'Barlow Condensed', sans-serif" font-size="20" fill="#E2E8F0" text-anchor="middle" font-weight="800" letter-spacing="4">FLEET IDENTITY LABEL</text>
+        <text x="225" y="200" font-family="monospace" font-size="11" fill="#71717A" text-anchor="middle">UNIT: ${unitNumber || "N/A"} · PLATE: ${plate || "N/A"}</text>
+        <line x1="40" y1="220" x2="410" y2="220" stroke="#CCFF00" stroke-width="2" stroke-dasharray="10 5"/>
+        
+        <!-- QR Code Frame & Real QR Modules -->
         <rect x="125" y="245" width="200" height="200" fill="#FFFFFF" stroke="#CCFF00" stroke-width="4" rx="4"/>
-        <g transform="translate(145, 265) scale(3.6)">
-          <rect x="0" y="0" width="10" height="10" fill="#000000"/> <rect x="2" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="3" y="3" width="4" height="4" fill="#000000"/>
-          <rect x="30" y="0" width="10" height="10" fill="#000000"/> <rect x="32" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="33" y="3" width="4" height="4" fill="#000000"/>
-          <rect x="0" y="30" width="10" height="10" fill="#000000"/> <rect x="2" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="3" y="3" width="4" height="4" fill="#000000"/>
-          <rect x="12" y="1" width="4" height="3" fill="#000000"/>
-          <rect x="18" y="3" width="6" height="2" fill="#000000"/>
-          <rect x="26" y="1" width="2" height="7" fill="#000000"/>
-          <rect x="3" y="14" width="8" height="6" fill="#000000"/>
-          <rect x="15" y="14" width="12" height="12" fill="#000000"/>
-          <rect x="30" y="15" width="4" height="4" fill="#000000"/>
-          <rect x="11" y="28" width="8" height="4" fill="#000000"/>
-          <rect x="23" y="23" width="13" height="13" fill="#000000"/>
-          <rect x="17" y="17" width="8" height="8" fill="#CCFF00" stroke="#000000" stroke-width="1.5"/>
-          <path d="M 21 19 L 23 23 L 19 23 Z" fill="#000000"/>
+        <g transform="translate(135, 255)">
+          ${qrPaths}
         </g>
+        
         <text x="225" y="480" font-family="'Barlow Condensed', sans-serif" font-size="18" fill="#CCFF00" text-anchor="middle" font-weight="900" letter-spacing="1">ESCANEAR PARA ORDEN</text>
         <text x="225" y="502" font-family="'Barlow Condensed', sans-serif" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="700">BMTS SYSTEMS STITCH</text>
         <rect x="35" y="525" width="380" height="30" fill="#000000" stroke="#27272A" stroke-width="1.5" rx="3"/>
@@ -693,6 +725,7 @@ function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
     `;
   }
   if (layout === "tech") {
+    const qrPaths = getQRCodeSVGPaths(finalQrUrl, 160).paths;
     return `
       <svg viewBox="0 0 450 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -703,26 +736,32 @@ function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
         <rect width="450" height="600" fill="#09090B"/>
         <rect width="450" height="600" fill="url(#saas-grid)"/>
         <rect x="25" y="25" width="400" height="550" fill="rgba(17, 24, 39, 0.75)" stroke="#374151" stroke-width="1.5" rx="16"/>
-        <g transform="translate(0, 0)">
-          <circle cx="225" cy="90" r="28" fill="#18181B" stroke="#D4FF33" stroke-width="1.5"/>
-          <path d="M 215 90 L 235 90 M 225 80 L 225 100" stroke="#D4FF33" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="225" cy="90" r="12" fill="none" stroke="#D4FF33" stroke-width="1" stroke-dasharray="4 2"/>
-          <text x="225" y="145" font-family="'Plus Jakarta Sans', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.5">bmts mobility</text>
-          <text x="225" y="165" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" fill="#D4FF33" text-anchor="middle" font-weight="600" letter-spacing="2">INTEGRATED LOGISTICS</text>
+        
+        <!-- Clean Tech BMTS Logo Header (Sleek Dark Mode) -->
+        <g transform="translate(100, 50)">
+          <!-- Vector Icon (Star + Rings) -->
+          <g transform="translate(0, 0)">
+            <polygon points="25,5 30,18 43,18 33,26 37,39 25,31 13,39 17,26 7,18 20,18" fill="#A3E635"/>
+            <path d="M 3,13 C 9,3 35,-1 46,10" stroke="#A3E635" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M 47,27 C 41,37 15,41 4,30" stroke="#A3E635" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <polygon points="25,10 28,19 36,19 30,24 33,33 25,28 17,33 20,19 14,19 22,19" fill="#09090B"/>
+          </g>
+          <!-- Bold text 'BMTS' -->
+          <text x="65" y="27" font-family="'Plus Jakarta Sans', sans-serif" font-size="28" font-weight="800" fill="#FFFFFF" letter-spacing="-0.5">BMTS</text>
+          <!-- Subtext 'MOBILITY GROUP' -->
+          <text x="65" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="600" fill="#A3E635" letter-spacing="2">MOBILITY GROUP</text>
         </g>
+        
         <line x1="60" y1="195" x2="390" y2="195" stroke="#27272A" stroke-width="1"/>
+        
+        <!-- QR Code Frame & Real QR Modules -->
         <g transform="translate(135, 220)">
           <rect width="180" height="180" fill="#FFFFFF" rx="12"/>
-          <g transform="translate(15, 15) scale(3.6)">
-            <rect x="0" y="0" width="10" height="10" fill="#09090b"/> <rect x="2" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="3" y="3" width="4" height="4" fill="#09090b"/>
-            <rect x="30" y="0" width="10" height="10" fill="#09090b"/> <rect x="32" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="33" y="3" width="4" height="4" fill="#09090b"/>
-            <rect x="0" y="30" width="10" height="10" fill="#09090b"/> <rect x="2" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="3" y="3" width="4" height="4" fill="#09090b"/>
-            <rect x="12" y="2" width="4" height="4" fill="#09090b"/> <rect x="20" y="4" width="4" height="2" fill="#09090b"/> <rect x="26" y="2" width="2" height="6" fill="#09090b"/>
-            <rect x="4" y="12" width="6" height="4" fill="#09090b"/> <rect x="14" y="12" width="10" height="10" fill="#09090b"/> <rect x="28" y="12" width="4" height="4" fill="#09090b"/>
-            <rect x="12" y="26" width="6" height="4" fill="#09090b"/> <rect x="24" y="24" width="12" height="12" fill="#09090b"/> <rect x="4" y="26" width="4" height="4" fill="#09090b"/>
-            <circle cx="20" cy="20" r="4" fill="#D4FF33"/>
+          <g transform="translate(10, 10)">
+            ${qrPaths}
           </g>
         </g>
+        
         <text x="225" y="445" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" fill="#A1A1AA" text-anchor="middle" font-weight="400">Scan unit: ${unitNumber || "N/A"}</text>
         <text x="225" y="468" font-family="'Plus Jakarta Sans', sans-serif" font-size="17" fill="#D4FF33" text-anchor="middle" font-weight="700" letter-spacing="0.5">STITCH DIGITAL VERIFICATION</text>
         <line x1="60" y1="500" x2="390" y2="500" stroke="#27272A" stroke-width="1"/>
@@ -732,6 +771,7 @@ function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
     `;
   }
   if (layout === "cockpit") {
+    const qrPaths = getQRCodeSVGPaths(finalQrUrl, 160).paths;
     return `
       <svg viewBox="0 0 450 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
         <rect width="450" height="600" fill="#121214" stroke="#4B5563" stroke-width="4"/>
@@ -740,11 +780,26 @@ function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
         <circle cx="420" cy="30" r="7" fill="#4B5563" stroke="#1F2937" stroke-width="2"/> <line x1="415" y1="30" x2="425" y2="30" stroke="#1F2937" stroke-width="1.5"/>
         <circle cx="30" cy="570" r="7" fill="#4B5563" stroke="#1F2937" stroke-width="2"/> <line x1="25" y1="570" x2="35" y2="570" stroke="#1F2937" stroke-width="1.5"/>
         <circle cx="420" cy="570" r="7" fill="#4B5563" stroke="#1F2937" stroke-width="2"/> <line x1="415" y1="570" x2="425" y2="570" stroke="#1F2937" stroke-width="1.5"/>
-        <g transform="translate(60, 60)">
+        
+        <!-- Instrumental Cockpit BMTS Logo Header -->
+        <g transform="translate(60, 50)">
           <rect x="0" y="0" width="330" height="85" fill="#1A1A1E" stroke="#4B5563" stroke-width="2" rx="4"/>
-          <text x="165" y="38" font-family="'Space Mono', monospace" font-size="22" font-weight="900" fill="#A3E635" text-anchor="middle" letter-spacing="2">BMTS MOBILITY</text>
-          <text x="165" y="65" font-family="'Space Mono', monospace" font-size="12" fill="#E5E7EB" text-anchor="middle" font-weight="700" letter-spacing="1">UNIT: ${unitNumber || "N/A"}</text>
+          <!-- Vector Icon (Star + Rings) -->
+          <g transform="translate(20, 18)">
+            <polygon points="25,5 30,18 43,18 33,26 37,39 25,31 13,39 17,26 7,18 20,18" fill="#A3E635"/>
+            <path d="M 3,13 C 9,3 35,-1 46,10" stroke="#A3E635" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M 47,27 C 41,37 15,41 4,30" stroke="#A3E635" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <polygon points="25,10 28,19 36,19 30,24 33,33 25,28 17,33 20,19 14,19 22,19" fill="#1A1A1E"/>
+          </g>
+          <!-- Text 'BMTS' -->
+          <text x="85" y="42" font-family="'Space Mono', monospace" font-size="24" font-weight="900" fill="#FFFFFF" letter-spacing="1">BMTS</text>
+          <!-- Subtext 'MOBILITY GROUP' -->
+          <text x="85" y="58" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#A3E635" letter-spacing="1.5">MOBILITY GROUP</text>
+          <!-- Unit Number badge on the right -->
+          <rect x="235" y="27" width="75" height="30" fill="#121214" stroke="#4B5563" stroke-width="1.5" rx="3"/>
+          <text x="272" y="46" font-family="'Space Mono', monospace" font-size="10" font-weight="900" fill="#E5E7EB" text-anchor="middle">U: ${unitNumber || "N/A"}</text>
         </g>
+        
         <line x1="50" y1="175" x2="400" y2="175" stroke="#374151" stroke-width="1.5"/>
         <g transform="translate(100, 195) scale(0.65)" stroke="#374151" stroke-width="2" fill="none">
           <circle cx="50" cy="50" r="40"/>
@@ -756,18 +811,15 @@ function generateStickerSVG(layout, unitNumber, plate, vin, qrUrl) {
           <line x1="280" y1="50" x2="295" y2="35" stroke="#A3E635" stroke-width="3" stroke-linecap="round"/>
           <circle cx="280" cy="50" r="5" fill="#A3E635" stroke="none"/>
         </g>
+        
+        <!-- QR Code Frame & Real QR Modules -->
         <g transform="translate(135, 275)">
           <rect width="180" height="180" fill="#FFFFFF" stroke="#4B5563" stroke-width="3" rx="4"/>
-          <g transform="translate(15, 15) scale(3.6)">
-            <rect x="0" y="0" width="10" height="10" fill="#121214"/> <rect x="2" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="3" y="3" width="4" height="4" fill="#121214"/>
-            <rect x="30" y="0" width="10" height="10" fill="#121214"/> <rect x="32" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="33" y="3" width="4" height="4" fill="#121214"/>
-            <rect x="0" y="30" width="10" height="10" fill="#121214"/> <rect x="2" y="2" width="6" height="6" fill="#FFFFFF"/> <rect x="3" y="3" width="4" height="4" fill="#121214"/>
-            <rect x="12" y="2" width="4" height="4" fill="#121214"/> <rect x="20" y="4" width="4" height="2" fill="#121214"/> <rect x="26" y="2" width="2" height="6" fill="#121214"/>
-            <rect x="4" y="12" width="6" height="4" fill="#121214"/> <rect x="14" y="12" width="10" height="10" fill="#121214"/> <rect x="28" y="12" width="4" height="4" fill="#121214"/>
-            <rect x="12" y="26" width="6" height="4" fill="#121214"/> <rect x="24" y="24" width="12" height="12" fill="#121214"/> <rect x="4" y="26" width="4" height="4" fill="#121214"/>
-            <rect x="16" y="16" width="8" height="8" fill="#A3E635"/>
+          <g transform="translate(10, 10)">
+            ${qrPaths}
           </g>
         </g>
+        
         <text x="225" y="490" font-family="'Space Mono', monospace" font-size="14" fill="#A3E635" text-anchor="middle" font-weight="700">[ SCAN PANEL TO CONNECT ]</text>
         <text x="225" y="512" font-family="'Space Mono', monospace" font-size="11" fill="#E5E7EB" text-anchor="middle">STITCH INTERFACE PROTOCOL v1.0</text>
         <line x1="50" y1="535" x2="400" y2="535" stroke="#374151" stroke-width="1.5"/>
@@ -900,6 +952,79 @@ $("#closeOcrModalBtn").addEventListener("click", () => {
   setMessage("#vehicleFormMsg", "Calibración cancelada.", "error");
 });
 
+// Batch Invoice Preview Actions
+$("#previewBatchInvoiceBtn").addEventListener("click", () => {
+  const checkboxes = $$("input[name='batchOrder']:checked", $("#unbilledOrdersContainer"));
+  if (!checkboxes.length) {
+    setMessage("#batchInvoiceMsg", "Selecciona al menos una orden para previsualizar.", "error");
+    return;
+  }
+  
+  const workOrderIds = checkboxes.map(cb => cb.value);
+  const orders = state.db.workOrders.filter(item => workOrderIds.includes(item.id));
+  
+  // Populate client info
+  const firstOrder = orders[0];
+  const vehicle = state.db.vehicles.find(v => v.id === firstOrder.vehicleId);
+  const client = state.db.clients.find(c => c.id === vehicle?.clientId) || state.db.clients[0];
+  $("#previewClientName").textContent = client ? client.name : "Community Tree Service";
+  
+  // Populate Invoice details
+  const nextNum = `BMTS-BATCH-${String(state.db.invoices.length + 1).padStart(4, "0")}`;
+  $("#previewInvoiceNumber").textContent = nextNum;
+  $("#previewInvoiceDate").textContent = `Fecha: ${new Date().toLocaleDateString()}`;
+  
+  // Populate itemized breakdown
+  const itemsContainer = $("#previewInvoiceItems");
+  itemsContainer.innerHTML = "";
+  
+  let subtotalSum = 0;
+  orders.forEach(wo => {
+    const v = state.db.vehicles.find(item => item.id === wo.vehicleId);
+    const vehicleText = v ? `${v.unitNumber} (${v.plate})` : "Unidad N/A";
+    
+    let partsCost = parseFloat((wo.parts || "").replace(/[^0-9.]/g, "")) || 0;
+    let laborCost = parseFloat((wo.labor || "").replace(/[^0-9.]/g, "")) || 0;
+    if (partsCost === 0 && laborCost === 0) {
+      laborCost = 150.00; // default cost
+    }
+    const woSubtotal = laborCost + partsCost;
+    subtotalSum += woSubtotal;
+    
+    const tr = document.createElement("tr");
+    tr.style.borderBottom = "1px solid #e5e7eb";
+    tr.style.color = "#374151";
+    tr.innerHTML = `
+      <td style="padding: 10px 0; font-weight: 600; color: #111827;">${vehicleText}</td>
+      <td style="padding: 10px 0;">${wo.serviceType}</td>
+      <td style="padding: 10px 0; text-align: right;">$${laborCost.toFixed(2)}</td>
+      <td style="padding: 10px 0; text-align: right;">$${partsCost.toFixed(2)}</td>
+      <td style="padding: 10px 0; text-align: right; font-weight: 700; color: #111827;">$${woSubtotal.toFixed(2)}</td>
+    `;
+    itemsContainer.appendChild(tr);
+  });
+  
+  const taxSum = subtotalSum * 0.0825;
+  const totalSum = subtotalSum + taxSum;
+  
+  $("#previewSubtotal").textContent = `$${subtotalSum.toFixed(2)}`;
+  $("#previewTax").textContent = `$${taxSum.toFixed(2)}`;
+  $("#previewTotal").textContent = `$${totalSum.toFixed(2)}`;
+  
+  // Show the modal and add a printing active body class
+  $("#batchInvoicePreviewModal").style.display = "flex";
+  document.body.classList.add("printing-batch-active");
+});
+
+$("#closeBatchPreviewModalBtn").addEventListener("click", () => {
+  $("#batchInvoicePreviewModal").style.display = "none";
+  document.body.classList.remove("printing-batch-active");
+});
+
+$("#printBatchInvoiceBtn").addEventListener("click", () => {
+  window.print();
+});
+
 $("#createBatchInvoiceBtn").addEventListener("click", async () => {
   const checkboxes = $$("input[name='batchOrder']:checked", $("#unbilledOrdersContainer"));
   if (!checkboxes.length) {
@@ -959,6 +1084,41 @@ $("#complianceForm").addEventListener("submit", (event) => {
   setTimeout(() => {
     setMessage("#complianceFormMsg", "", "");
   }, 3000);
+});
+
+$("#simulateAlertBtn").addEventListener("click", () => {
+  // Switch to Service tab
+  const tab = $(".tab[data-view='order']");
+  if (tab) {
+    $$(".tab").forEach((item) => item.classList.remove("active"));
+    $$(".view").forEach((item) => item.classList.remove("active"));
+    tab.classList.add("active");
+    $("#orderView").classList.add("active");
+  }
+  // Select first vehicle if none selected
+  if (!state.selectedVehicleId && state.db && state.db.vehicles[0]) {
+    state.selectedVehicleId = state.db.vehicles[0].id;
+    render();
+  }
+  // Fill service form fields to trigger duplicate check warning
+  const form = $("#orderForm");
+  form.serviceType.value = "SmogCheck";
+  form.adminOverride.checked = false;
+  form.overrideReason.value = "";
+  
+  const rules = JSON.parse(localStorage.getItem("bmts_rules") || '{"smog":3, "oil":30, "roadside":7}');
+  setMessage("#orderFormMsg", `Advertencia (SIMULACIÓN): Se detectó un servicio de SmogCheck reciente para esta unidad dentro del umbral de ${rules.smog} meses. Requiere autorización admin.`, "error");
+  
+  // Highlight override box briefly to guide the user
+  const box = $(".override-box");
+  if (box) {
+    box.style.border = "1px solid var(--brand)";
+    box.style.boxShadow = "0 0 10px rgba(204,255,0,0.2)";
+    setTimeout(() => {
+      box.style.border = "none";
+      box.style.boxShadow = "none";
+    }, 4000);
+  }
 });
 
 // Initial state updates
