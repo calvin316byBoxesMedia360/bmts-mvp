@@ -97,6 +97,11 @@ El problema no es falta de conocimiento tecnico del taller. El problema es que e
 - Se corrigio el endpoint de OCR en `server.js` para retornar `200 OK` (en lugar de `501`) cuando el OCR corre con exito pero no se encuentra un VIN en la foto, mejorando el manejo de errores.
 - Se automatizo el flujo de usuario en `app.js` de modo que al completarse la lectura de OCR o al pegar un VIN, si el codigo tiene 17 caracteres, se ejecuta automaticamente la consulta a vPIC/NHTSA para precargar la ficha del vehiculo.
 - Se realizo prueba exitosa con la foto real del usuario, decodificando el VIN `MAJ3S2GEXKC255041` del Ford Ecosport 2019 de forma automatizada.
+- Se realizó sesión de refinamiento estético y alineación de marca basada en el logotipo de campaña de BMTS MOBILITY GROUP.
+- Se definieron los tokens de color de marca (Negro carbón, Verde Neón y Plata Metálica) y 3 direcciones de diseño visual premium: Opción A (Heavy-Duty Racing), Opción B (Clean Tech SaaS), y Opción C (Truck Cockpit).
+- Se definieron las especificaciones de impresión física de las etiquetas autoadhesivas QR (vinilo de 3.5 mil, adhesivo acrílico permanente y laminación mate UV).
+- Se creó y configuró el subagente `jules` como diseñador de UI/UX, quien generó la propuesta técnica en el artefacto `design_proposals.md`.
+- Se construyó y refactorizó la maqueta web interactiva `BMTS_Design_Directions.html` aplicando los estándares de diseño de BoxesMedia360 (incluyendo iluminación ambiental, glassmorphism, diales SVG interactivos y LEDs parpadeantes).
 
 ## Habilidades De Agentes Confirmadas
 

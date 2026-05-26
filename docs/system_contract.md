@@ -68,6 +68,8 @@ Estados sugeridos para una orden:
 10. Cada registro de vehiculo debe incluir una foto principal obligatoria del auto/unidad en el MVP.
 11. Cada vehiculo/unidad debe poder tener un QR unico vinculado a su registro local.
 12. El QR debe permitir al mecanico abrir rapidamente la ficha, historial y carga de nuevo servicio.
+13. El diseño de la interfaz debe seguir los estándares premium de BoxesMedia360 (Dark Mode predeterminado, acentos en Verde Neón de seguridad e iluminación ambiental) definidos en el catálogo de maquetas.
+14. Las tarjetas QR físicas autoadhesivas para los camiones deben producirse sobre vinilo pesado (3.5 mil) con adhesivo acrílico permanente y laminación mate UV para asegurar el escaneo en el campo bajo el sol.
 
 ## Reglas de Duplicado
 

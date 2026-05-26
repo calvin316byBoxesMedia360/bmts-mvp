@@ -151,6 +151,24 @@ Se optimizó la lectura de imágenes reales, se estabilizó el manejo de errores
 
 ### Verificacion
 
-- El backend procesa correctamente la foto real del usuario de 4.19MB, detectando el VIN `MAJ3S2GEXKC255041` en unos 4 segundos.
+- El backend procesa correctamente la foto real del usuario de 4.19MB, detectando el VIN `MAJ3S2GEXKC255041` del Ford Ecosport 2019 de forma automatizada.
 - La consulta vPIC decodifica de forma inmediata los datos de un Ford Ecosport 2019 de manera automática.
 - Respuestas sin VIN legible ahora muestran un aviso de ayuda en pantalla en lugar de provocar un error 501.
+
+## 2026-05-25 - Alineación Estética y Catálogo de Maquetas Interactivas
+
+Se estableció el sistema de diseño visual premium bajo los estándares de BoxesMedia360 para BMTS Mobility Group y se creó un catálogo interactivo de prueba.
+
+### Implementado
+
+- **Direcciones de Diseño**: Propuesta de tres alternativas visuales completas (Opción A: Heavy-Duty Racing, Opción B: Clean Tech & Mobility, Opción C: Truck Cockpit).
+- **Catálogo de Maquetas**: Construcción y posterior refactorización completa del archivo `BMTS_Design_Directions.html` en el espacio de trabajo.
+- **Estándar de Handoff**: Estructura de luces ambientales con CSS radial gradient, glassmorphism con desenfoque real, medidores de progreso vectoriales SVG integrados con las especificaciones de impresión de etiquetas QR en vinilo mate UV.
+- **Especificaciones Físicas de Vinilo**: Detalle de parámetros físicos de impresión (calibre 3.5 mil, adhesivo acrílico permanente, laminado mate antirreflejos y esquinas redondeadas) para garantizar durabilidad del código QR en campo.
+- **Creación de Agente Diseñador**: Configuración y lanzamiento de `jules` para generar el artefacto de especificaciones `design_proposals.md` y guías técnicas.
+
+### Verificación
+
+- Se abrió `BMTS_Design_Directions.html` en el navegador local, conmutando exitosamente entre las 3 pestañas dinámicas.
+- Las animaciones e iluminación de la interfaz se ejecutan de manera fluida y con alto contraste (hasta 12.5:1 en Opción A) conforme a los estándares de BoxesMedia360.
+- El archivo HTML está listo para utilizarse como base interactiva de handoff.

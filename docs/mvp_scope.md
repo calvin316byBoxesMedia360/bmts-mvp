@@ -107,6 +107,15 @@ React Native, OCR, WebSocket, Twilio, Stripe, QuickBooks y agentes deben entrar 
 
 Para el MVP, las fotos se guardaran localmente en el servidor/proyecto. Esta decision puede cambiar en fases posteriores hacia storage cloud o servidor dedicado.
 
+## Estilo Visual y UI/UX Premium (BoxesMedia360)
+
+El diseño de la aplicación y la papelería del taller se regirá por tres conceptos de alta fidelidad:
+- **Opción A (Heavy-Duty Racing):** Estilo rudo deportivo con tipografías inclinadas Archivo/Barlow, franjas de taller y contraste de 12:1 óptimo para luz solar directa.
+- **Opción B (Clean Tech & Mobility):** Estilo SaaS de vanguardia, grises oscuros, cristal degradado (glassmorphism) y acentos neon con brillos LED tenues.
+- **Opción C (Truck Cockpit):** Skeuomorfismo de tablero de camiones Kenworth/Peterbilt, diales SVG, rejilla de luces testigo y números segmentados.
+
+La producción física de las etiquetas QR integradas con el logo de BMTS se realizará en vinilo pesado mate UV de 3.5 mil con adhesivo acrílico permanente.
+
 ## Validacion Del MVP
 
 El MVP se considera util si Beto y oficina pueden hacer esto en una demo:
