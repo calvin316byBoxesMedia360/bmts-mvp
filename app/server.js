@@ -188,9 +188,29 @@ function nextSmogDate(dateString) {
   return date.toISOString().slice(0, 10);
 }
 
-function runPaddleVinOcr(imagePath) {
+async function getPythonExecutable() {
+  if (process.env.BMTS_PYTHON) {
+    return process.env.BMTS_PYTHON;
+  }
+  // Try Windows virtualenv
+  const winVenv = path.join(ROOT, ".venv", "Scripts", "python.exe");
+  try {
+    await fs.access(winVenv);
+    return winVenv;
+  } catch {}
+  // Try Linux/macOS virtualenv
+  const nixVenv = path.join(ROOT, ".venv", "bin", "python");
+  try {
+    await fs.access(nixVenv);
+    return nixVenv;
+  } catch {}
+  // Fallback to global python
+  return "python";
+}
+
+async function runPaddleVinOcr(imagePath) {
+  const python = await getPythonExecutable();
   return new Promise((resolve) => {
-    const python = process.env.BMTS_PYTHON || "python";
     const ocrCacheHome = process.env.BMTS_OCR_CACHE_HOME || path.join(ROOT, ".paddlex_runtime");
     const ocrHome = process.env.BMTS_OCR_HOME || path.join(ROOT, ".home_runtime");
     const ocrCache = process.env.BMTS_OCR_APP_CACHE || path.join(ROOT, ".cache_runtime");
@@ -214,6 +234,9 @@ function runPaddleVinOcr(imagePath) {
     });
     child.stderr.on("data", (chunk) => {
       stderr += chunk.toString();
+    });
+    child.on("error", (err) => {
+      resolve({ ok: false, code: -1, error: `Failed to spawn Python process: ${err.message}`, stderr: err.stack });
     });
     child.on("close", (code) => {
       try {
@@ -819,7 +842,13 @@ async function serveStatic(req, res, url) {
   try {
     const ext = path.extname(filePath).toLowerCase();
     const file = await fs.readFile(filePath);
-    res.writeHead(200, { "content-type": MIME[ext] || "application/octet-stream" });
+    const headers = { "content-type": MIME[ext] || "application/octet-stream" };
+    if (ext === ".html" || ext === ".js" || ext === ".css") {
+      headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0";
+      headers["Pragma"] = "no-cache";
+      headers["Expires"] = "0";
+    }
+    res.writeHead(200, headers);
     res.end(file);
   } catch {
     notFound(res);

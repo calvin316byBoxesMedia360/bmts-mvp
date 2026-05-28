@@ -305,15 +305,21 @@ label {
   z-index: 1;
 }
 
+.vin-read-btn .btn-text {
+  position: relative;
+  z-index: 2;
+}
+
 .vin-read-btn .progress-bar {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   width: 0%;
-  background: rgba(204, 255, 0, 0.25);
-  z-index: -1;
+  background: rgba(204, 255, 0, 0.35);
+  z-index: 1;
   transition: width 0.3s ease;
+  pointer-events: none;
 }
 
 .form-panel {
@@ -557,6 +563,7 @@ dd {
   color: #e2e8f0;
   font-size: 13px;
   padding: 2px 0;
+  word-break: break-all;
 }
 
 /* QR Code Card */
@@ -860,26 +867,26 @@ code {
   }
 
   .vehicle-list {
-    max-height: 45vh; /* slightly shorter to avoid covering whole screen */
+    max-height: 45vh;
   }
 
-  /* Optimize touch target sizes for mechanics in the field */
+  /* Optimize touch target sizes for mechanics in the field (+25%) */
   .input, .primary, .secondary, .tool-button {
-    min-height: 48px;
-    font-size: 15px;
-    padding: 12px 16px;
+    min-height: 60px;
+    font-size: 17px;
+    padding: 14px 20px;
   }
 
   .tab {
-    min-height: 46px;
-    padding: 12px 18px;
-    font-size: 14px;
+    min-height: 58px;
+    padding: 14px 20px;
+    font-size: 16px;
   }
 
   .status-controls button {
-    min-height: 44px;
-    padding: 10px 16px;
-    font-size: 13px;
+    min-height: 55px;
+    padding: 12px 18px;
+    font-size: 14px;
   }
 
   /* Tables inside invoice preview modal */
@@ -888,6 +895,79 @@ code {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Header & Sandbox responsive fixes to prevent icon cuts */
+  .topbar {
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .topbar h1 {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .top-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .sandbox-panel {
+    padding: 10px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .sandbox-toggles {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 12px 16px;
+  }
+
+  /* Stacked description details list for readability and fitting on screen */
+  dl {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  dt {
+    margin-top: 8px;
+    font-size: 11px;
+  }
+  dd {
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    padding-bottom: 6px;
+  }
+
+  /* 25% larger texts inside modal windows on mobile */
+  .modal-content h2 {
+    font-size: 20px;
+  }
+  
+  .modal-content p, .modal-content label, .modal-content .help-text {
+    font-size: 15px;
+  }
+
+  .calibration-image-pane strong {
+    font-size: 14px !important;
+  }
+  
+  #ocrProposedVin {
+    font-size: 20px !important;
+  }
+
+  .printable-invoice {
+    padding: 16px !important;
+  }
+  
+  .login-card {
+    padding: 20px;
   }
 }
 

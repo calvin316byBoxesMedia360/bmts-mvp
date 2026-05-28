@@ -472,12 +472,7 @@ $("#readVinPhotoBtn").addEventListener("click", async () => {
   btn.classList.add("loading");
   btn.disabled = true;
   
-  let progressEl = btn.querySelector(".progress-bar");
-  if (!progressEl) {
-    progressEl = document.createElement("div");
-    progressEl.className = "progress-bar";
-    btn.appendChild(progressEl);
-  }
+  const progressEl = btn.querySelector(".progress-bar");
   progressEl.style.width = "0%";
   
   let progress = 0;
