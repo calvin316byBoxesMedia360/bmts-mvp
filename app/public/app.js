@@ -114,12 +114,18 @@ function applyRolePermissions() {
   const scB = $("#toggleScenarioB").checked;
   const scC = $("#toggleScenarioC").checked;
 
+  const mobileInvOpt = $("#mobileViewSelect option[value='invoice']");
+  const mobileCompOpt = $("#mobileViewSelect option[value='compliance']");
+
   if (role === "mechanic") {
     // 1. Hide Admin Tabs (Invoice & Compliance)
     $$(".tab[data-view='invoice'], .tab[data-view='compliance']").forEach(t => {
       t.style.display = "none";
       t.classList.remove("active");
     });
+    if (mobileInvOpt) mobileInvOpt.style.display = "none";
+    if (mobileCompOpt) mobileCompOpt.style.display = "none";
+
     // 2. Hide override administrative controls
     const overrideBox = $(".override-box");
     if (overrideBox) overrideBox.style.display = "none";
@@ -135,6 +141,9 @@ function applyRolePermissions() {
     $$(".tab[data-view='invoice']").forEach(t => t.style.display = scC ? "block" : "none");
     $$(".tab[data-view='compliance']").forEach(t => t.style.display = scB ? "block" : "none");
     
+    if (mobileInvOpt) mobileInvOpt.style.display = scC ? "block" : "none";
+    if (mobileCompOpt) mobileCompOpt.style.display = scB ? "block" : "none";
+
     const overrideBox = $(".override-box");
     if (overrideBox) overrideBox.style.display = "grid";
   }
@@ -427,6 +436,13 @@ $("#decodeVinBtn").addEventListener("click", async () => {
     const data = await api(`/api/nhtsa/${encodeURIComponent(vin)}`);
     fillVehicleFormFromNhtsa(data);
     setMessage("#vehicleFormMsg", "Datos tecnicos cargados desde vPIC/NHTSA.", "ok");
+    
+    // Auto-advance to technical specs review step
+    const step1 = $("#formStep1");
+    if (step1.classList.contains("active")) {
+      step1.classList.remove("active");
+      $("#formStep2").classList.add("active");
+    }
   } catch (error) {
     setMessage("#vehicleFormMsg", error.message, "error");
   }
@@ -613,6 +629,11 @@ $("#vehicleForm").addEventListener("submit", async (event) => {
     $("#vinPhotoPreview").textContent = "Sin foto VIN";
     updateVinValidation();
     setMessage("#vehicleFormMsg", "Partida creada con QR asignado.", "ok");
+    
+    // Reset form wizard to step 1
+    $$(".form-step").forEach((step) => step.classList.remove("active"));
+    $("#formStep1").classList.add("active");
+    
     render();
   } catch (error) {
     setMessage("#vehicleFormMsg", error.message, "error");
@@ -732,7 +753,22 @@ $$(".tab").forEach((tab) => {
     $$(".view").forEach((item) => item.classList.remove("active"));
     tab.classList.add("active");
     $(`#${tab.dataset.view}View`).classList.add("active");
+    
+    // Sync mobile select view switcher dropdown
+    const select = $("#mobileViewSelect");
+    if (select) select.value = tab.dataset.view;
   });
+});
+
+$("#mobileViewSelect").addEventListener("change", (e) => {
+  const targetView = e.target.value;
+  const tab = $(`.tab[data-view='${targetView}']`);
+  if (tab) {
+    $$(".tab").forEach((item) => item.classList.remove("active"));
+    $$(".view").forEach((item) => item.classList.remove("active"));
+    tab.classList.add("active");
+    $(`#${tab.dataset.view}View`).classList.add("active");
+  }
 });
 
 $("#searchInput").addEventListener("input", renderVehicles);
@@ -1302,3 +1338,43 @@ $("#simulateAlertBtn").addEventListener("click", () => {
 onSandboxTogglesUpdated();
 
 checkAuthSession();
+
+// Wizard Navigation Button Handlers
+$$(".next-step-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const currentStepNum = parseInt(btn.closest(".form-step").id.replace("formStep", ""), 10);
+    const nextStepNum = parseInt(btn.dataset.next, 10);
+    
+    // Validation before moving past Step 1
+    if (currentStepNum === 1) {
+      const form = $("#vehicleForm");
+      if (!form.unitNumber.value.trim() || !form.plate.value.trim() || !form.vin.value.trim()) {
+        setMessage("#vehicleFormMsg", "Por favor completa la Unidad, Placa y VIN antes de continuar.", "error");
+        return;
+      }
+      if (form.vin.value.trim().length !== 17) {
+        setMessage("#vehicleFormMsg", "El VIN debe tener exactamente 17 caracteres válidos.", "error");
+        return;
+      }
+    }
+    
+    // Clear message
+    setMessage("#vehicleFormMsg", "");
+    
+    $(`#formStep${currentStepNum}`).classList.remove("active");
+    $(`#formStep${nextStepNum}`).classList.add("active");
+  });
+});
+
+$$(".prev-step-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const currentStepNum = parseInt(btn.closest(".form-step").id.replace("formStep", ""), 10);
+    const prevStepNum = parseInt(btn.dataset.prev, 10);
+    
+    // Clear message
+    setMessage("#vehicleFormMsg", "");
+    
+    $(`#formStep${currentStepNum}`).classList.remove("active");
+    $(`#formStep${prevStepNum}`).classList.add("active");
+  });
+});

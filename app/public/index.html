@@ -7,7 +7,7 @@
   <meta name="darkreader-lock">
   <title>BMTS MVP - Control de Flota y Partidas de Nacimiento</title>
   <meta name="description" content="Sistema de control de flota de vehículos y mantenimiento móvil de BMTS Mobility Group. Incluye partidas de nacimiento, historial vivo, generación de códigos QR de flota, e integración con vPIC/NHTSA.">
-  <link rel="stylesheet" href="/styles.css?v=0.4.3">
+  <link rel="stylesheet" href="/styles.css?v=0.4.4">
 </head>
 <body>
   <header class="topbar">
@@ -68,6 +68,17 @@
     </aside>
 
     <section class="workspace">
+      <div class="mobile-tabs-container">
+        <label for="mobileViewSelect" style="margin-bottom: 6px; font-size: 11px; color: var(--muted); font-weight: bold;">VISTA DE LA APLICACIÓN</label>
+        <select id="mobileViewSelect" class="input mobile-view-select" style="border-color: var(--brand); color: var(--brand); font-weight: bold; background: rgba(18, 18, 22, 0.95); margin-bottom: 12px; min-height: 52px; font-size: 15px;">
+          <option value="birth">Partida</option>
+          <option value="history">Historial</option>
+          <option value="order">Servicio</option>
+          <option value="invoice">Invoice</option>
+          <option value="compliance" id="mobileComplianceOpt" style="display: none;">Cumplimiento</option>
+        </select>
+      </div>
+
       <nav class="tabs" aria-label="Vistas">
         <button class="tab active" data-view="birth">Partida</button>
         <button class="tab" data-view="history">Historial</button>
@@ -84,110 +95,149 @@
               <span class="badge required">foto obligatoria</span>
             </div>
 
-            <div class="grid two">
-              <label>Numero de unidad
-                <input name="unitNumber" class="input" required placeholder="CT-001">
-              </label>
-              <label>Placa
-                <input name="plate" class="input" required placeholder="8ABC123">
-              </label>
-            </div>
-
-            <label>VIN
-              <div class="inline">
-                <input name="vin" class="input" required placeholder="17 caracteres">
-                <button type="button" id="decodeVinBtn" class="secondary">vPIC</button>
+            <!-- Paso 1 del Formulario -->
+            <fieldset class="form-step active" id="formStep1">
+              <legend style="display: none;">Paso 1: Identificación y VIN</legend>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; color: var(--brand); font-size: 13px; letter-spacing: 0.1em;">PASO 1 DE 3: IDENTIDAD</span>
+                <span class="badge">Básico</span>
               </div>
-            </label>
-
-            <div class="vin-tools">
-              <button type="button" id="pasteVinBtn" class="tool-button">Pegar VIN</button>
-              <span id="vinValidation" class="vin-validation">VIN pendiente</span>
-            </div>
-
-            <div class="grid two">
-              <label>Foto del VIN
-                <input name="vinPhoto" class="input" type="file" accept="image/*">
-              </label>
-              <div>
-                <div class="vin-photo-preview" id="vinPhotoPreview">Sin foto VIN</div>
-                <button type="button" id="readVinPhotoBtn" class="tool-button vin-read-btn">
-                  <span class="btn-text">Leer y cargar VIN</span>
-                  <span class="progress-bar"></span>
-                </button>
+              
+              <div class="grid two">
+                <label>Numero de unidad
+                  <input name="unitNumber" class="input" required placeholder="CT-001">
+                </label>
+                <label>Placa
+                  <input name="plate" class="input" required placeholder="8ABC123">
+                </label>
               </div>
-            </div>
 
-            <!-- Scenario D: OCR Calibration Quick Steps -->
-            <div id="ocrGuideBox" class="ocr-guide-box" style="margin-top: 10px; margin-bottom: 14px; padding: 12px; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 8px; font-size: 11px; line-height: 1.4;">
-              <strong style="color: var(--brand); display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">🔍 Asistente de Calibración Lado a Lado</strong>
-              <ol style="margin: 0; padding-left: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 4px;">
-                <li>Sube la foto del código de barras o chasis del VIN.</li>
-                <li>Presiona <strong>Leer VIN con PaddleOCR</strong>.</li>
-                <li>Calibra y corrige el texto detectado frente a la imagen original en la pantalla dividida.</li>
-              </ol>
-            </div>
+              <label>VIN
+                <div class="inline">
+                  <input name="vin" class="input" required placeholder="17 caracteres">
+                  <button type="button" id="decodeVinBtn" class="secondary">vPIC</button>
+                </div>
+              </label>
 
-            <div class="grid three">
-              <label>Año
-                <input name="year" class="input" placeholder="2021">
-              </label>
-              <label>Marca
-                <input name="make" class="input" placeholder="Ford">
-              </label>
-              <label>Modelo
-                <input name="model" class="input" placeholder="F-550">
-              </label>
-            </div>
+              <div class="vin-tools">
+                <button type="button" id="pasteVinBtn" class="tool-button">Pegar VIN</button>
+                <span id="vinValidation" class="vin-validation">VIN pendiente</span>
+              </div>
 
-            <div class="grid two">
-              <label>Carroceria
-                <input name="bodyClass" class="input">
-              </label>
-              <label>Motor
-                <input name="engine" class="input">
-              </label>
-            </div>
+              <div class="grid two">
+                <label>Foto del VIN
+                  <input name="vinPhoto" class="input" type="file" accept="image/*">
+                </label>
+                <div>
+                  <div class="vin-photo-preview" id="vinPhotoPreview">Sin foto VIN</div>
+                  <button type="button" id="readVinPhotoBtn" class="tool-button vin-read-btn">
+                    <span class="btn-text">Leer y cargar VIN</span>
+                    <span class="progress-bar"></span>
+                  </button>
+                </div>
+              </div>
 
-            <div class="grid three">
-              <label>Combustible
-                <input name="fuelType" class="input">
-              </label>
-              <label>GVWR
-                <input name="gvwr" class="input">
-              </label>
-              <label>Traccion
-                <input name="driveType" class="input">
-              </label>
-            </div>
+              <!-- Scenario D: OCR Calibration Quick Steps -->
+              <div id="ocrGuideBox" class="ocr-guide-box" style="margin-top: 14px; margin-bottom: 14px; padding: 12px; background: rgba(255, 255, 255, 0.02); border: 1px dashed rgba(255, 255, 255, 0.1); border-radius: 8px; font-size: 11px; line-height: 1.4;">
+                <strong style="color: var(--brand); display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">🔍 Asistente de Calibración Lado a Lado</strong>
+                <ol style="margin: 0; padding-left: 14px; color: var(--muted); display: flex; flex-direction: column; gap: 4px;">
+                  <li>Sube la foto del código de barras o chasis del VIN.</li>
+                  <li>Presiona <strong>Leer y cargar VIN</strong>.</li>
+                  <li>Calibra y corrige el texto detectado frente a la imagen original en la pantalla dividida.</li>
+                </ol>
+              </div>
+              
+              <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+                <button type="button" class="primary next-step-btn" data-next="2" style="min-width: 130px;">Siguiente ➔</button>
+              </div>
+            </fieldset>
 
-            <div class="grid two">
-              <label>Fabricante
-                <input name="manufacturer" class="input">
-              </label>
-              <label>Planta
-                <input name="plant" class="input">
-              </label>
-            </div>
+            <!-- Paso 2 del Formulario -->
+            <fieldset class="form-step" id="formStep2">
+              <legend style="display: none;">Paso 2: Especificaciones Técnicas</legend>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; color: var(--brand); font-size: 13px; letter-spacing: 0.1em;">PASO 2 DE 3: ESPECIFICACIONES</span>
+                <span class="badge">NHTSA</span>
+              </div>
 
-            <input name="vehicleType" type="hidden">
-            <input name="nhtsaErrorText" type="hidden">
-            <div id="nhtsaSummary" class="nhtsa-summary">vPIC/NHTSA pendiente</div>
+              <div class="grid three">
+                <label>Año
+                  <input name="year" class="input" placeholder="2021">
+                </label>
+                <label>Marca
+                  <input name="make" class="input" placeholder="Ford">
+                </label>
+                <label>Modelo
+                  <input name="model" class="input" placeholder="F-550">
+                </label>
+              </div>
 
-            <div class="grid two">
-              <label>Proximo SmogCheck permitido
-                <input name="nextSmogCheckDue" class="input" type="date">
+              <div class="grid two">
+                <label>Carroceria
+                  <input name="bodyClass" class="input">
+                </label>
+                <label>Motor
+                  <input name="engine" class="input">
+                </label>
+              </div>
+
+              <div class="grid three">
+                <label>Combustible
+                  <input name="fuelType" class="input">
+                </label>
+                <label>GVWR
+                  <input name="gvwr" class="input">
+                </label>
+                <label>Traccion
+                  <input name="driveType" class="input">
+                </label>
+              </div>
+
+              <div class="grid two">
+                <label>Fabricante
+                  <input name="manufacturer" class="input">
+                </label>
+                <label>Planta
+                  <input name="plant" class="input">
+                </label>
+              </div>
+
+              <input name="vehicleType" type="hidden">
+              <input name="nhtsaErrorText" type="hidden">
+              <div id="nhtsaSummary" class="nhtsa-summary">vPIC/NHTSA pendiente</div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 14px; gap: 10px;">
+                <button type="button" class="secondary prev-step-btn" data-prev="1" style="flex: 1; min-height: 60px;">⬅ Atrás</button>
+                <button type="button" class="primary next-step-btn" data-next="3" style="flex: 1; min-height: 60px;">Siguiente ➔</button>
+              </div>
+            </fieldset>
+
+            <!-- Paso 3 del Formulario -->
+            <fieldset class="form-step" id="formStep3">
+              <legend style="display: none;">Paso 3: Foto Principal y Alta</legend>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                <span style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; color: var(--brand); font-size: 13px; letter-spacing: 0.1em;">PASO 3 DE 3: COMPLETAR</span>
+                <span class="badge required">Requerido</span>
+              </div>
+
+              <div class="grid two">
+                <label>Proximo SmogCheck permitido
+                  <input name="nextSmogCheckDue" class="input" type="date">
+                </label>
+                <label>Foto principal
+                  <input name="photo" class="input" type="file" accept="image/*" required>
+                </label>
+              </div>
+
+              <label>Notas iniciales
+                <textarea name="notes" class="input textarea" placeholder="Condicion inicial, observaciones, equipo especial..."></textarea>
               </label>
-              <label>Foto principal
-                <input name="photo" class="input" type="file" accept="image/*" required>
-              </label>
-            </div>
 
-            <label>Notas iniciales
-              <textarea name="notes" class="input textarea" placeholder="Condicion inicial, observaciones, equipo especial..."></textarea>
-            </label>
-
-            <button class="primary" type="submit">Crear partida + QR</button>
+              <div style="display: flex; justify-content: space-between; margin-top: 14px; gap: 10px;">
+                <button type="button" class="secondary prev-step-btn" data-prev="2" style="flex: 1; min-height: 60px;">⬅ Atrás</button>
+                <button class="primary" type="submit" style="flex: 1; min-height: 60px;">Crear partida + QR</button>
+              </div>
+            </fieldset>
             <p id="vehicleFormMsg" class="message"></p>
           </form>
 
@@ -579,7 +629,7 @@
     </div>
   </div>
 
-  <script src="/qrcode.min.js?v=0.4.3"></script>
-  <script src="/app.js?v=0.4.3"></script>
+  <script src="/qrcode.min.js?v=0.4.4"></script>
+  <script src="/app.js?v=0.4.4"></script>
 </body>
 </html>

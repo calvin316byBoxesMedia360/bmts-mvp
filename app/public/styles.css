@@ -824,6 +824,23 @@ code {
   cursor: pointer;
 }
 
+.mobile-tabs-container {
+  display: none;
+}
+
+fieldset.form-step {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: none;
+}
+
+fieldset.form-step.active {
+  display: block;
+  animation: fadeIn 0.2s ease-out;
+}
+
 /* Responsiveness & Mobile Optimizations */
 @media (max-width: 920px) {
   .toggle-sidebar-btn {
@@ -834,6 +851,24 @@ code {
     grid-template-columns: 1fr;
     position: relative;
     padding: 10px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  .workspace {
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .mobile-tabs-container {
+    display: block;
+    width: 100%;
+  }
+
+  .tabs {
+    display: none !important;
   }
   
   .split {
@@ -968,6 +1003,11 @@ code {
   
   .login-card {
     padding: 20px;
+  }
+
+  .sticker-preview-wrapper svg {
+    max-width: 100%;
+    height: auto;
   }
 }
 
