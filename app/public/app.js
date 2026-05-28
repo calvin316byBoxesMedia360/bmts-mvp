@@ -467,67 +467,105 @@ $("#readVinPhotoBtn").addEventListener("click", async () => {
     setMessage("#vehicleFormMsg", "Primero carga una foto del VIN.", "error");
     return;
   }
+  
+  const btn = $("#readVinPhotoBtn");
+  btn.classList.add("loading");
+  btn.disabled = true;
+  
+  let progressEl = btn.querySelector(".progress-bar");
+  if (!progressEl) {
+    progressEl = document.createElement("div");
+    progressEl.className = "progress-bar";
+    btn.appendChild(progressEl);
+  }
+  progressEl.style.width = "0%";
+  
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    if (progress < 90) {
+      progress += Math.random() * 10;
+      if (progress > 90) progress = 90;
+      progressEl.style.width = `${progress}%`;
+    }
+  }, 250);
+
+  const cleanupProgress = () => {
+    clearInterval(progressInterval);
+    progressEl.style.width = "100%";
+    setTimeout(() => {
+      btn.classList.remove("loading");
+      btn.disabled = false;
+      progressEl.style.width = "0%";
+    }, 400);
+  };
+
   setMessage("#vehicleFormMsg", "Leyendo VIN con PaddleOCR...");
+  let result;
+  let vinPhotoDataUrl;
   try {
-    const vinPhotoDataUrl = await fileToDataUrl(file);
-    const result = await api("/api/vin-photo/recognize", {
+    vinPhotoDataUrl = await fileToDataUrl(file);
+    result = await api("/api/vin-photo/recognize", {
       method: "POST",
       body: JSON.stringify({ vinPhotoDataUrl })
     });
-    
-    const scD = $("#toggleScenarioD").checked;
-    if (scD) {
-      $("#ocrCalibrationModal").style.display = "flex";
-      $("#calibrationImage").src = vinPhotoDataUrl;
-      $("#ocrRawText").value = result.rawText || (result.vin ? `VIN: ${result.vin}` : "No text detected");
-      
-      const proposedVin = normalizeVin(result.vin || result.rawText || "");
-      $("#ocrProposedVin").value = proposedVin;
-      
-      const validateProposed = () => {
-        const valNode = $("#ocrVinValidation");
-        const clean = normalizeVin($("#ocrProposedVin").value);
-        $("#ocrProposedVin").value = clean;
-        if (clean.length === 17) {
-          valNode.textContent = "VIN listo (17 caracteres)";
-          valNode.className = "vin-validation ok";
-        } else {
-          valNode.textContent = `VIN incompleto: ${clean.length}/17`;
-          valNode.className = "vin-validation error";
-        }
-      };
-      
-      $("#ocrProposedVin").oninput = validateProposed;
-      validateProposed();
-      
-      $("#confirmOcrVinBtn").onclick = () => {
-        const cleanVin = normalizeVin($("#ocrProposedVin").value);
-        if (cleanVin.length !== 17) {
-          alert("Por favor corrige el VIN para que tenga exactamente 17 caracteres.");
-          return;
-        }
-        $("#ocrCalibrationModal").style.display = "none";
-        form.vin.value = cleanVin;
-        updateVinValidation();
-        setMessage("#vehicleFormMsg", "VIN calibrado y confirmado.", "ok");
-        $("#decodeVinBtn").click();
-      };
-      
-      setMessage("#vehicleFormMsg", "OCR completado. Calibración requerida.", "ok");
-    } else {
-      if (result.ok && result.vin) {
-        form.vin.value = normalizeVin(result.vin);
-        updateVinValidation();
-        setMessage("#vehicleFormMsg", `VIN detectado con ${result.provider}. Consultando vPIC...`, "ok");
-        setTimeout(() => {
-          $("#decodeVinBtn").click();
-        }, 50);
-      } else {
-        setMessage("#vehicleFormMsg", result.error || "No se detectó un VIN de 17 caracteres en la foto. Intenta con otra foto o escribe el VIN manualmente.", "error");
-      }
-    }
   } catch (error) {
+    cleanupProgress();
     setMessage("#vehicleFormMsg", `${error.message} Puedes pegar o escribir el VIN mientras conectamos OCR.`, "error");
+    return;
+  }
+  
+  cleanupProgress();
+  
+  const scD = $("#toggleScenarioD").checked;
+  if (scD) {
+    $("#ocrCalibrationModal").style.display = "flex";
+    $("#calibrationImage").src = vinPhotoDataUrl;
+    $("#ocrRawText").value = result.rawText || (result.vin ? `VIN: ${result.vin}` : "No text detected");
+    
+    const proposedVin = normalizeVin(result.vin || result.rawText || "");
+    $("#ocrProposedVin").value = proposedVin;
+    
+    const validateProposed = () => {
+      const valNode = $("#ocrVinValidation");
+      const clean = normalizeVin($("#ocrProposedVin").value);
+      $("#ocrProposedVin").value = clean;
+      if (clean.length === 17) {
+        valNode.textContent = "VIN listo (17 caracteres)";
+        valNode.className = "vin-validation ok";
+      } else {
+        valNode.textContent = `VIN incompleto: ${clean.length}/17`;
+        valNode.className = "vin-validation error";
+      }
+    };
+    
+    $("#ocrProposedVin").oninput = validateProposed;
+    validateProposed();
+    
+    $("#confirmOcrVinBtn").onclick = () => {
+      const cleanVin = normalizeVin($("#ocrProposedVin").value);
+      if (cleanVin.length !== 17) {
+        alert("Por favor corrige el VIN para que tenga exactamente 17 caracteres.");
+        return;
+      }
+      $("#ocrCalibrationModal").style.display = "none";
+      form.vin.value = cleanVin;
+      updateVinValidation();
+      setMessage("#vehicleFormMsg", "VIN calibrado y confirmed.", "ok");
+      $("#decodeVinBtn").click();
+    };
+    
+    setMessage("#vehicleFormMsg", "OCR completado. Calibración requerida.", "ok");
+  } else {
+    if (result.ok && result.vin) {
+      form.vin.value = normalizeVin(result.vin);
+      updateVinValidation();
+      setMessage("#vehicleFormMsg", `VIN detectado con ${result.provider}. Consultando vPIC...`, "ok");
+      setTimeout(() => {
+        $("#decodeVinBtn").click();
+      }, 50);
+    } else {
+      setMessage("#vehicleFormMsg", result.error || "No se detectó un VIN de 17 caracteres en la foto. Intenta con otra foto o escribe el VIN manualmente.", "error");
+    }
   }
 });
 
