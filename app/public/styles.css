@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
+  color-scheme: dark;
   --bg: #060608;
   --panel: rgba(18, 18, 22, 0.65);
   --panel-card: rgba(28, 28, 34, 0.45);
