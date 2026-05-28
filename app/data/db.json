@@ -342,5 +342,23 @@
       },
       "createdAt": "2026-05-25T19:02:53.465Z"
     }
+  ],
+  "users": [
+    {
+      "id": "user_748d96b5-45e7-441b-9c14-7b5757eb5f53",
+      "username": "beto_admin",
+      "passwordHash": "$2a$10$2I8ltInegdYNfE1p.E7O1ugLigJDLVY.E.PWvUa0teZgMENRzFchu",
+      "role": "admin",
+      "name": "Beto (Administrador)",
+      "createdAt": "2026-05-28T16:40:06.085Z"
+    },
+    {
+      "id": "user_5b4fa71b-c8cf-4674-9159-feda33ecf6cb",
+      "username": "mechanic_hollister",
+      "passwordHash": "$2a$10$t8qUyFJ0CFhqaO94YnFFc.vUwCaLwNeswYTp8boI1oxWWJtkCwzAa",
+      "role": "mechanic",
+      "name": "Mecánico de Campo",
+      "createdAt": "2026-05-28T16:40:06.085Z"
+    }
   ]
 }

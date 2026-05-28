@@ -642,17 +642,146 @@
   </header>
 
   <main>
-    <!-- Selector de Versión Principal (V0.3 vs V0.2 vs V0.1) -->
+    <!-- Selector de Versión Principal (V0.4 vs V0.3 vs V0.2 vs V0.1) -->
     <div class="version-selector" aria-label="Versión del Reporte">
-      <button class="version-tab active" data-version="v3">Reporte V0.3 (Actual - Refinamiento de Escenarios Multiverse Sandbox & Lote)</button>
+      <button class="version-tab active" data-version="v4">Reporte V0.4 (Actual - Autenticación Multi-rol y Seguridad)</button>
+      <button class="version-tab" data-version="v3">Reporte V0.3 (Previo - Refinamiento de Escenarios Sandbox & Lote)</button>
       <button class="version-tab" data-version="v2">Reporte V0.2 (Previo - Estabilización de OCR & UX)</button>
       <button class="version-tab" data-version="v1">Reporte V0.1 (Inicial - Planificación de MVP)</button>
     </div>
 
     <!-- ============================================== -->
-    <!-- PANEL REPORTE V0.3 (ACTUAL)                     -->
+    <!-- PANEL REPORTE V0.4 (ACTUAL)                     -->
     <!-- ============================================== -->
-    <div id="panel-v3" class="version-panel active">
+    <div id="panel-v4" class="version-panel active">
+      
+      <!-- Pestañas internas para la versión 0.4 -->
+      <nav class="inner-tabs" aria-label="Secciones de la versión 0.4">
+        <button class="inner-tab active" data-view="v4-admin">Vista Administrativa (Seguridad del Negocio)</button>
+        <button class="inner-tab" data-view="v4-tech">Vista Técnica (Criptografía & Stack)</button>
+        <button class="inner-tab" data-view="v4-logs">Estado & Logs de Cambio</button>
+      </nav>
+
+      <!-- V0.4 - VISTA ADMINISTRATIVA -->
+      <section id="view-v4-admin" class="view-content active">
+        <div class="grid two">
+          <div class="card">
+            <h2 class="card-title">🛡️ Control de Acceso basado en Roles (RBAC)</h2>
+            <p>Se ha implementado una segregación estricta de tareas operativas entre la oficina y el campo para blindar los procesos financieros de la empresa:</p>
+            <h3>👤 Perfil Administrador (Beto / Oficina)</h3>
+            <p>Acceso total del negocio. Es el único perfil autorizado para ver cobros, consolidar facturas en lote, modificar umbrales de SmogCheck y aprobar overrides/justificaciones.</p>
+            <h3>🔧 Perfil Mecánico (Personal en Campo)</h3>
+            <p>Acceso 100% operativo y seguro desde smartphones. Tienen bloqueado el acceso a pestañas de facturación (Invoice) y configuración de reglas. No pueden autorizar excepciones administrativas sin la clave de Beto.</p>
+            
+            <h3 style="margin-top:20px;">🔑 Guía DEV de Recuperación y Backups</h3>
+            <p><strong>Copia de Seguridad de la Base de Datos:</strong> Almacenada de forma persistente en Railway en la ruta <code>/app/data/db.json</code>. El comando para descargar una copia local con las credenciales cifradas es:</p>
+            <p><code class="file-link">npx.cmd railway volume files download /app/data/db.json ./backup_db.json</code></p>
+            <p><strong>Auto-Sembrado de Credenciales:</strong> Si la base de datos se borra o se desea cambiar la contraseña de forma remota, el servidor re-sembrará las credenciales a partir de las variables de entorno de Railway <code>ADMIN_DEFAULT_PASS</code> y <code>MECH_DEFAULT_PASS</code>.</p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">🔒 Diagrama de Flujo de Autenticación</h2>
+            <p>El sistema utiliza almacenamiento de sesión HTTP-Only en el servidor para evitar filtraciones de tokens por XSS (Cross-Site Scripting):</p>
+            <div class="flow-diagram">
+              <div class="flow-step">
+                <div class="flow-step-num">1</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Petición de Login (POST /api/auth/login)</div>
+                  <div class="flow-step-desc">Se envían credenciales y el servidor comprueba el hash usando bcrypt.</div>
+                </div>
+              </div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">
+                <div class="flow-step-num">2</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Set-Cookie (HttpOnly, Secure, SameSite=Strict)</div>
+                  <div class="flow-step-desc">El navegador almacena la cookie de sesión firmada de forma segura e inaccesible para scripts locales.</div>
+                </div>
+              </div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">
+                <div class="flow-step-num">3</div>
+                <div class="flow-step-content">
+                  <div class="flow-step-title">Middleware API (Verificación en Servidor)</div>
+                  <div class="flow-step-desc">Toda petición posterior a la API es validada e interceptada según el rol antes de devolver datos.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- V0.4 - VISTA TÉCNICA -->
+      <section id="view-v4-tech" class="view-content">
+        <div class="grid two">
+          <div class="card">
+            <h2 class="card-title">⚙️ Criptografía y Seguridad en Backend</h2>
+            <h3>🔐 Cifrado de Contraseñas (bcryptjs)</h3>
+            <p>Utilizamos <code>bcryptjs</code>, una biblioteca pura en Javascript que garantiza la compatibilidad multiplataforma entre el entorno local (Windows) y los contenedores de producción (Railway/Linux) sin requerir compilación de C++ nativo.</p>
+            <h3>🍪 Blindaje de Cookies y CSRF</h3>
+            <p>Las cookies de sesión viajan protegidas con los flags <code>SameSite=Strict</code> (para detener ataques de falsificación de peticiones en sitios cruzados) y <code>Secure</code> (para garantizar tráfico HTTPS cifrado en Railway).</p>
+            <h3>🚿 Prevención de Consumo Doble de Streams</h3>
+            <p>Se modificó el lector JSON del servidor <code>readJson(req)</code> para almacenar en caché el cuerpo leído (<code>req.body</code>). Esto evita errores de bloqueo o respuestas vacías cuando el cuerpo de la petición es analizado primero por el middleware y luego por la lógica del endpoint.</p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">📁 Archivos Modificados</h2>
+            <ul>
+              <li><strong>app/package.json:</strong> Agregado <code>bcryptjs</code> como dependencia.</li>
+              <li><strong>app/server.js:</strong> Implementada lógica de middleware de cookies, seeder de usuarios por defecto, e endpoints de seguridad de sesión.</li>
+              <li><strong>app/public/index.html:</strong> Agregado formulario de Login en overlay flotante y etiquetas de identificación de usuario en cabecera.</li>
+              <li><strong>app/public/styles.css:</strong> Estilos de Login y transiciones táctiles.</li>
+              <li><strong>app/public/app.js:</strong> Manejador de Login, Logout y filtrado dinámico de pestañas según rol.</li>
+              <li><strong>app/scripts/verify_security.js:</strong> Script de prueba para validar cifrado de contraseñas y denegaciones de API (401).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- V0.4 - ESTADO Y LOGS DE CAMBIO -->
+      <section id="view-v4-logs" class="view-content">
+        <div class="stat-container">
+          <div class="stat-box">
+            <div class="stat-val">V0.4</div>
+            <div class="stat-lbl">Versión Actual</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">2026-05-28</div>
+            <div class="stat-lbl">Fecha de Corte</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" style="color: var(--success);">ESTABLE</div>
+            <div class="stat-lbl">Estado local</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">2/2</div>
+            <div class="stat-lbl">Roles Funcionales (Admin / Mecánico)</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">🕒 Bitácora de Cambios de Seguridad (2026-05-28)</h2>
+          <div class="timeline">
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-28 09:40 AM</div>
+              <div class="timeline-title">Validación de Cifrado y Middleware de API</div>
+              <div class="timeline-desc">Se creó un script de verificación automatizado para simular llamadas directas a la API y verificar la respuesta <code>401 Unauthorized</code> del middleware del servidor. El hash de contraseñas de bcryptjs tardó 51ms, cumpliendo el umbral de seguridad.</div>
+            </div>
+            <div class="timeline-item success">
+              <div class="timeline-date">2026-05-28 09:20 AM</div>
+              <div class="timeline-title">Implementación de Interfaz de Login e Integración Multi-rol</div>
+              <div class="timeline-desc">Se integró el formulario de Login y la lógica de ocultación de pestañas basadas en rol. Se comprobó que el usuario mecánico no puede acceder a las áreas de facturación ni desactivar bloqueos de SmogCheck de forma manual.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- PANEL REPORTE V0.3 (PREVIO)                    -->
+    <!-- ============================================== -->
+    <div id="panel-v3" class="version-panel">
       
       <!-- Pestañas internas para la versión 0.3 -->
       <nav class="inner-tabs" aria-label="Secciones de la versión 0.3">

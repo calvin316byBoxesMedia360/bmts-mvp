@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "@railway/cli": "^4.62.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
   }
 }

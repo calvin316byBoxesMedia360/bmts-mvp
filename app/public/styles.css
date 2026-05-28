@@ -1187,3 +1187,35 @@ code {
     display: none !important;
   }
 }
+
+/* Login Screen CSS */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(circle at center, #0f0f15 0%, #060608 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--panel-solid);
+  border: 2px solid var(--brand);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(204, 255, 0, 0.1);
+  padding: 30px;
+  animation: loginFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.login-logo-container .eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}

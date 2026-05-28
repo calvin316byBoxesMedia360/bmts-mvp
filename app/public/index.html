@@ -14,6 +14,8 @@
       <h1>Control de flota y partida de nacimiento</h1>
     </div>
     <div class="top-actions">
+      <span id="userBadge" class="badge" style="display: none; border-color: var(--brand); color: #fff;"></span>
+      <button id="logoutBtn" class="secondary" style="display: none; font-size: 11px; padding: 0 14px; min-height: 40px; font-weight: bold; border-color: var(--danger); color: var(--danger); margin-left: 8px;">Salir</button>
       <button id="toggleSidebarBtn" class="icon-button toggle-sidebar-btn" title="Mostrar Flota" style="display: none; border-color: var(--brand); color: var(--brand); font-size: 13px; width: auto; padding: 0 12px; font-weight: bold; gap: 6px; align-items: center;">☰ Flota</button>
       <button id="refreshBtn" class="icon-button" title="Actualizar">↻</button>
       <button id="printBtn" class="icon-button" title="Imprimir QR">⎙</button>
@@ -47,6 +49,7 @@
         <span class="switch-slider"></span>
         <span class="switch-label">Calibración OCR (D)</span>
       </label>
+      <button id="simulateFleetBtn" class="primary" style="font-size: 11px; padding: 0 12px; min-height: 28px; font-weight: 800; background: var(--brand); color: #000; border-color: var(--brand); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; text-transform: uppercase; margin-left: 10px;">⚡ Simular Flota</button>
     </div>
   </div>
 
@@ -540,6 +543,34 @@
           <p style="margin: 4px 0 0 0;">Beto's Mobile &amp; Truck Services · Hollister, California · (831) 555-BMTS</p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Login View Overlay -->
+  <div id="loginOverlay" class="login-overlay" style="display: flex;">
+    <div class="login-card panel">
+      <div class="login-logo-container" style="text-align: center; margin-bottom: 20px;">
+        <svg viewBox="0 0 100 80" class="login-logo-svg" xmlns="http://www.w3.org/2000/svg" style="width: 70px; height: 56px; margin: 0 auto 10px;">
+          <g skewX="-10">
+            <polygon points="50,10 55,23 68,23 58,31 62,44 50,36 38,44 42,31 32,23 45,23" fill="#CCFF00"/>
+            <path d="M 28,18 C 34,8 60,4 71,15" stroke="#CCFF00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <path d="M 72,32 C 66,42 40,46 29,35" stroke="#CCFF00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <h2 style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: #fff; margin: 0;">BMTS MOBILITY GROUP</h2>
+        <p class="eyebrow" style="margin-top: 4px;">Acceso de Control de Flota</p>
+      </div>
+      
+      <form id="loginForm" class="form-panel">
+        <label>Usuario
+          <input name="username" class="input" required placeholder="beto_admin" autocomplete="username">
+        </label>
+        <label>Contraseña
+          <input name="password" class="input" type="password" required placeholder="••••••••" autocomplete="current-password">
+        </label>
+        <button class="primary" type="submit" style="width: 100%; margin-top: 10px;">Iniciar Sesión</button>
+        <p id="loginMsg" class="message error" style="margin-top: 10px; justify-content: center;"></p>
+      </form>
     </div>
   </div>
 

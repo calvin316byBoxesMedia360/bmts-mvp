@@ -1,6 +1,7 @@
 const state = {
   db: null,
   selectedVehicleId: "",
+  user: null,
   routeQrToken: location.pathname.startsWith("/v/") ? location.pathname.replace("/v/", "") : ""
 };
 
@@ -64,6 +65,97 @@ async function loadState() {
     state.selectedVehicleId = state.db.vehicles[0].id;
   }
   render();
+}
+
+// Login Form Submit Event
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const username = form.username.value;
+  const password = form.password.value;
+  setMessage("#loginMsg", "");
+  
+  try {
+    const data = await api("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password })
+    });
+    state.user = data.user;
+    $("#loginOverlay").style.display = "none";
+    $("#userBadge").textContent = `${state.user.name} (${state.user.role === 'admin' ? 'Admin' : 'Mecánico'})`;
+    $("#userBadge").style.display = "inline-flex";
+    $("#logoutBtn").style.display = "inline-block";
+    form.reset();
+    
+    applyRolePermissions();
+    await loadState();
+  } catch (err) {
+    setMessage("#loginMsg", err.message, "error");
+  }
+});
+
+// Logout Button Event
+$("#logoutBtn").addEventListener("click", async () => {
+  try {
+    await api("/api/auth/logout", { method: "POST" });
+  } catch (err) {
+    console.error("Logout error", err);
+  }
+  state.user = null;
+  state.db = null;
+  $("#loginOverlay").style.display = "flex";
+  $("#userBadge").style.display = "none";
+  $("#logoutBtn").style.display = "none";
+});
+
+// Role-based visibility enforcement
+function applyRolePermissions() {
+  const role = state.user?.role;
+  const scB = $("#toggleScenarioB").checked;
+  const scC = $("#toggleScenarioC").checked;
+
+  if (role === "mechanic") {
+    // 1. Hide Admin Tabs (Invoice & Compliance)
+    $$(".tab[data-view='invoice'], .tab[data-view='compliance']").forEach(t => {
+      t.style.display = "none";
+      t.classList.remove("active");
+    });
+    // 2. Hide override administrative controls
+    const overrideBox = $(".override-box");
+    if (overrideBox) overrideBox.style.display = "none";
+    
+    // Reset view if mechanic was somehow parked on a locked tab
+    const activeTab = $(".tab.active");
+    if (!activeTab || activeTab.dataset.view === "invoice" || activeTab.dataset.view === "compliance") {
+      const birthTab = $(".tab[data-view='birth']");
+      if (birthTab) birthTab.click();
+    }
+  } else {
+    // Admin: Restore views based on Scenario checklist toggles
+    $$(".tab[data-view='invoice']").forEach(t => t.style.display = scC ? "block" : "none");
+    $$(".tab[data-view='compliance']").forEach(t => t.style.display = scB ? "block" : "none");
+    
+    const overrideBox = $(".override-box");
+    if (overrideBox) overrideBox.style.display = "grid";
+  }
+}
+
+async function checkAuthSession() {
+  try {
+    const data = await api("/api/auth/session");
+    state.user = data.user;
+    $("#loginOverlay").style.display = "none";
+    $("#userBadge").textContent = `${state.user.name} (${state.user.role === 'admin' ? 'Admin' : 'Mecánico'})`;
+    $("#userBadge").style.display = "inline-flex";
+    $("#logoutBtn").style.display = "inline-block";
+    
+    applyRolePermissions();
+    await loadState();
+  } catch {
+    $("#loginOverlay").style.display = "flex";
+    $("#userBadge").style.display = "none";
+    $("#logoutBtn").style.display = "none";
+  }
 }
 
 function selectedVehicle() {
@@ -656,6 +748,9 @@ function onSandboxTogglesUpdated() {
     ocrGuide.style.display = scD ? "block" : "none";
   }
 
+  // Force re-evaluation of tab displays based on active user role
+  applyRolePermissions();
+
   if (state.db) render();
 }
 
@@ -940,6 +1035,30 @@ $("#toggleScenarioB").addEventListener("change", onSandboxTogglesUpdated);
 $("#toggleScenarioC").addEventListener("change", onSandboxTogglesUpdated);
 $("#toggleScenarioD").addEventListener("change", onSandboxTogglesUpdated);
 
+$("#simulateFleetBtn").addEventListener("click", async () => {
+  if (!confirm("¿Deseas simular una flota completa de 15 camiones? Esto reemplazará las unidades actuales.")) {
+    return;
+  }
+  const btn = $("#simulateFleetBtn");
+  const oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "Simulando...";
+  
+  try {
+    const data = await api("/api/simulate/fleet", {
+      method: "POST"
+    });
+    alert(data.message);
+    state.selectedVehicleId = "";
+    await loadState();
+  } catch (error) {
+    alert("Error al simular la flota: " + error.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+});
+
 // Batch invoicing panels
 $("#batchInvoiceBtn").addEventListener("click", () => {
   $("#invoiceForm").style.display = "none";
@@ -1149,6 +1268,4 @@ $("#simulateAlertBtn").addEventListener("click", () => {
 // Initial state updates
 onSandboxTogglesUpdated();
 
-loadState().catch((error) => {
-  document.body.innerHTML = `<main class="panel"><h1>No se pudo cargar BMTS MVP</h1><p>${error.message}</p></main>`;
-});
+checkAuthSession();
